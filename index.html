@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>00981A 淨值與持股歷史趨勢</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
+    h1 { text-align: center; color: #1a202c; }
+    .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .chart-wrapper { width: 100%; height: 500px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>00981A 淨值與持股趨勢儀表板</h1>
+    <p style="text-align: center; color: #666;">來自自動化的每日爬蟲更新資料，顯示淨值與成分股權重比例</p>
+    <div class="chart-wrapper">
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    Papa.parse("ezmoney_00981A_history.csv", {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        // Data is usually sorted by date in descending order. Ensure chronological for charting
+        const data = results.data.sort((a,b) => new Date(a.date) - new Date(b.date));
+        
+        const labels = data.map(row => row.date);
+        
+        // Ensure values are parsed cleanly
+        const navValues = data.map(row => {
+            let val = row['每受益權單位淨資產價值(元)'];
+            return val ? parseFloat(val) : null;
+        });
+        
+        const tsmcWeights = data.map(row => {
+            let val = row['台積電持股權重'];
+            return val ? parseFloat(val.replace("%", "")) : null;
+        });
+        
+        const tgtcWeights = data.map(row => {
+            let val = row['台光電持股權重'];
+            return val ? parseFloat(val.replace("%", "")) : null;
+        });
+        
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: '每單位淨資產價值(元)',
+                data: navValues,
+                borderColor: '#4a90e2',
+                backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                yAxisID: 'y',
+                tension: 0.2,
+                fill: true
+              },
+              {
+                label: '台積電權重 (%)',
+                data: tsmcWeights,
+                borderColor: '#e74c3c',
+                backgroundColor: 'transparent',
+                yAxisID: 'y1',
+                tension: 0.2
+              },
+              {
+                label: '台光電權重 (%)',
+                data: tgtcWeights,
+                borderColor: '#f39c12',
+                backgroundColor: 'transparent',
+                yAxisID: 'y1',
+                tension: 0.2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false,
+            },
+            scales: {
+              x: {
+                title: { display: true, text: '日期' }
+              },
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: { display: true, text: '每單位淨值 (元)' },
+                suggestedMin: Math.min(...navValues.filter(n=>n!=null)) * 0.95
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: { display: true, text: '權重 (%)' },
+                grid: { drawOnChartArea: false },
+                suggestedMin: 0
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
