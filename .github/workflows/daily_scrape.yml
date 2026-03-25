@@ -1,0 +1,38 @@
+name: Daily ETF Scrape
+
+on:
+  schedule:
+    # 每天早上 10:00 UTC (台灣時間 18:00) 執行一次
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape-and-update:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Scraper
+      run: python ETF規模分析.py
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add ezmoney_00981A_history.csv
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update ETF PCF data" && git push)
