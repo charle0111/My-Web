@@ -48,6 +48,11 @@
             return val ? parseFloat(val.replace("%", "")) : null;
         });
         
+        const totalIssued = data.map(row => {
+            let val = row['已發行受益權單位總數'];
+            return val ? (parseFloat(val) / 100000000) : null; // 轉換為「億」為單位
+        });
+        
         const ctx = document.getElementById('myChart').getContext('2d');
         new Chart(ctx, {
           type: 'line',
@@ -78,6 +83,15 @@
                 backgroundColor: 'transparent',
                 yAxisID: 'y1',
                 tension: 0.2
+              },
+              {
+                label: '發行單位總數 (億)',
+                data: totalIssued,
+                borderColor: '#2ecc71',
+                backgroundColor: 'transparent',
+                yAxisID: 'y2',
+                borderDash: [5, 5],
+                tension: 0.2
               }
             ]
           },
@@ -106,6 +120,13 @@
                 title: { display: true, text: '權重 (%)' },
                 grid: { drawOnChartArea: false },
                 suggestedMin: 0
+              },
+              y2: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: { display: true, text: '單位總數 (億)' },
+                grid: { drawOnChartArea: false }
               }
             }
           }
