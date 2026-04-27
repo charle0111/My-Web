@@ -5,32 +5,6 @@
   <title>00981A 淨值與持股歷史趨勢</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  
-  <!-- OneSignal -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-          appId: "1df85786-ebdb-4449-80dc-ed35cd6dce1d",
-  
-          serviceWorkerPath: "/My-Web/OneSignalSDKWorker.js",
-          serviceWorkerParam: { scope: "/My-Web/" },
-  
-          notifyButton: {
-              enable: true
-          },
-          promptOptions: {
-              slidedown: {
-                  enabled: true,
-                  autoPrompt: true,
-                  timeDelay: 3
-              }
-          }
-      });
-  });
-  </script>
-  
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
     h1 { text-align: center; color: #1a202c; }
