@@ -11,27 +11,23 @@
   <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
-  
       await OneSignal.init({
           appId: "1df85786-ebdb-4449-80dc-ed35cd6dce1d",
+  
+          serviceWorkerPath: "My-Web/OneSignalSDKWorker.js",
+          serviceWorkerParam: { scope: "/My-Web/" },
+  
           notifyButton: {
               enable: true
+          },
+          promptOptions: {
+              slidedown: {
+                  enabled: true,
+                  autoPrompt: true,
+                  timeDelay: 3
+              }
           }
       });
-  
-      // 主動要求通知授權
-      setTimeout(async ()=>{
-          const permission = OneSignal.Notifications.permission;
-          console.log("目前通知權限:", permission);
-  
-          if(permission !== "granted"){
-              await OneSignal.Notifications.requestPermission();
-          }
-  
-          // 顯示目前訂閱ID
-          const id = OneSignal.User.PushSubscription.id;
-          console.log("OneSignal Subscription ID:", id);
-      },3000);
   });
   </script>
   
