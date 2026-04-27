@@ -38,16 +38,6 @@
             return val ? parseFloat(val) : null;
         });
         
-        const tsmcWeights = data.map(row => {
-            let val = row['台積電持股權重'];
-            return val ? parseFloat(val.replace("%", "")) : null;
-        });
-        
-        const tgtcWeights = data.map(row => {
-            let val = row['台光電持股權重'];
-            return val ? parseFloat(val.replace("%", "")) : null;
-        });
-        
         const totalIssued = data.map(row => {
             let val = row['已發行受益權單位總數'];
             return val ? (parseFloat(val) / 100000000) : null; // 轉換為「億」為單位
@@ -67,22 +57,6 @@
                 yAxisID: 'y',
                 tension: 0.2,
                 fill: true
-              },
-              {
-                label: '台積電權重 (%)',
-                data: tsmcWeights,
-                borderColor: '#e74c3c',
-                backgroundColor: 'transparent',
-                yAxisID: 'y1',
-                tension: 0.2
-              },
-              {
-                label: '台光電權重 (%)',
-                data: tgtcWeights,
-                borderColor: '#f39c12',
-                backgroundColor: 'transparent',
-                yAxisID: 'y1',
-                tension: 0.2
               },
               {
                 label: '發行單位總數 (億)',
@@ -112,14 +86,6 @@
                 position: 'left',
                 title: { display: true, text: '每單位淨值 (元)' },
                 suggestedMin: Math.min(...navValues.filter(n=>n!=null)) * 0.95
-              },
-              y1: {
-                type: 'linear',
-                display: true,
-                position: 'right',
-                title: { display: true, text: '權重 (%)' },
-                grid: { drawOnChartArea: false },
-                suggestedMin: 0
               },
               y2: {
                 type: 'linear',
