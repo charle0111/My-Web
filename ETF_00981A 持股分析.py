@@ -32,7 +32,7 @@ if os.getenv("GITHUB_ACTIONS") == "true":
 # 如果想要在本機強制不想看到網頁彈出，也可以取消下方註解
 # options.add_argument('--headless=new') 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-url = "https://www.ezmoney.com.tw/ETF/Transaction/PCF"
+url = "https://www.ezmoney.com.tw/ETF/Transaction/PCF?fundCode=49YTW"
 driver.get(url)
 
 print("等待網頁載入...")
