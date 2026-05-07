@@ -119,15 +119,15 @@ for etf in etf_options:
         print(f"抓取: {date_str} (ROC: {roc_date})... ", end="")
         
         try:
-            # 填入日期 - 透過 JS 設定值並觸發 change 事件，确保日期 picker 正確變更
+            # 填入日期: 先清空輸入框再直接鍵入民國年日期字串
+            from selenium.webdriver.common.keys import Keys
             date_input = driver.find_element(By.ID, "ED")
-            driver.execute_script("""
-                var el = arguments[0];
-                var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-                nativeInputValueSetter.call(el, arguments[1]);
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                el.dispatchEvent(new Event('change', { bubbles: true }));
-            """, date_input, roc_date)
+            date_input.click()
+            time.sleep(0.2)
+            date_input.send_keys(Keys.CONTROL + "a")
+            date_input.send_keys(Keys.DELETE)
+            time.sleep(0.1)
+            date_input.send_keys(roc_date)
             time.sleep(0.3)
             
             # 點擊查詢按鈕 (透過 JS 點擊避免被 Loader 遮擋)
@@ -164,22 +164,26 @@ for etf in etf_options:
             
             page_text = soup.text.replace(chr(10), ' ')
             
-            # 確保外層區塊確實包含我們剛查詢的日期，避免讀到舊頁面的暫存資料
-            if roc_date in page_text:
-                # 擷取 "基金淨資產價值(元)"
-                match1 = re.search(r'基金淨資產價值\(元\)\s*(?:NTD|TWD)?\s*([\d,\.]+)', page_text)
-                if match1:
-                    nav_value = match1.group(1).replace(",", "")
-                    
-                # 擷取 "已發行受益權單位總數"
-                match2 = re.search(r'已發行受益權單位總數\s*([\d,\.]+)', page_text)
-                if match2:
-                    total_issued = match2.group(1).replace(",", "")
-                    
-                # 擷取 "每受益權單位淨資產價值(元)"
-                match3 = re.search(r'每受益權單位淨資產價值\(元\)\s*(?:NTD|TWD)?\s*([\d,\.]+)', page_text)
-                if match3:
-                    nav_per_unit = match3.group(1).replace(",", "")
+            # 在 CI 模式下印出 debug 資訊
+            if IN_CI:
+                # 印出頁面中是否含有我們查詢的日期，幫助直接諮斷問題
+                date_in_page = roc_date in page_text
+                print(f"[debug] roc_date='{roc_date}' in page: {date_in_page}", end=" | ")
+            
+            # 擷取 "基金淨資產價值(元)"
+            match1 = re.search(r'基金淨資產價值\(元\)\s*(?:NTD|TWD)?\s*([\d,\.]+)', page_text)
+            if match1:
+                nav_value = match1.group(1).replace(",", "")
+                
+            # 擷取 "已發行受益權單位總數"
+            match2 = re.search(r'已發行受益權單位總數\s*([\d,\.]+)', page_text)
+            if match2:
+                total_issued = match2.group(1).replace(",", "")
+                
+            # 擷取 "每受益權單位淨資產價值(元)"
+            match3 = re.search(r'每受益權單位淨資產價值\(元\)\s*(?:NTD|TWD)?\s*([\d,\.]+)', page_text)
+            if match3:
+                nav_per_unit = match3.group(1).replace(",", "")
 
             if nav_value:
                 print(nav_value)
