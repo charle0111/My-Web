@@ -23,19 +23,32 @@ def to_roc_date(dt):
     return f"{year:03d}/{dt.month:02d}/{dt.day:02d}"
 
 print("啟動瀏覽器")
+IN_CI = os.getenv("GITHUB_ACTIONS") == "true"
 options = webdriver.ChromeOptions()
-# 若環境變數 GITHUB_ACTIONS 存在，自動啟用 headless 模式
-if os.getenv("GITHUB_ACTIONS") == "true":
+# 在 CI 或本機 headless 模式下需要的參數
+if IN_CI:
     options.add_argument('--headless=new')
-    
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--window-size=1920,1080')
+    # 避免被網站偵測為 bot
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    options.add_experimental_option('excludeSwitches', ['enable-automation'])
+    options.add_experimental_option('useAutomationExtension', False)
+    options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36')
+
 # 如果想要在本機強制不想看到網頁彈出，也可以取消下方註解
-# options.add_argument('--headless=new') 
+# options.add_argument('--headless=new')
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 url = "https://www.ezmoney.com.tw/ETF/Transaction/PCF?fundCode=49YTW"
 driver.get(url)
 
-print("等待網頁載入...")
-time.sleep(3)
+if IN_CI:
+    # CI 伺服器會慢，等長一點
+    time.sleep(8)
+else:
+    time.sleep(3)
 
 # ===== 抓取所有 ETF 選項 =====
 try:
@@ -106,9 +119,16 @@ for etf in etf_options:
         print(f"抓取: {date_str} (ROC: {roc_date})... ", end="")
         
         try:
-            # 填入日期
+            # 填入日期 - 透過 JS 設定值並觸發 change 事件，确保日期 picker 正確變更
             date_input = driver.find_element(By.ID, "ED")
-            driver.execute_script(f"arguments[0].value = '{roc_date}';", date_input)
+            driver.execute_script("""
+                var el = arguments[0];
+                var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+                nativeInputValueSetter.call(el, arguments[1]);
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            """, date_input, roc_date)
+            time.sleep(0.3)
             
             # 點擊查詢按鈕 (透過 JS 點擊避免被 Loader 遮擋)
             search_btn = driver.find_element(By.XPATH, "//button[contains(text(), '查詢')]")
@@ -118,12 +138,13 @@ for etf in etf_options:
             try:
                 from selenium.webdriver.support.ui import WebDriverWait
                 from selenium.webdriver.support import expected_conditions as EC
-                WebDriverWait(driver, 5).until(
+                WebDriverWait(driver, 10).until(
                     EC.invisibility_of_element_located((By.ID, "Loader"))
                 )
             except:
                 pass
-            time.sleep(1)  # 確保資料已渲染
+            wait_time = 2.5 if IN_CI else 1.0
+            time.sleep(wait_time)  # 確保資料已渲染
             
             # 檢查是否有 alert 彈出 (例如: 查無資料)
             try:
