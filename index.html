@@ -1,23 +1,102 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
   <meta charset="UTF-8">
   <title>00981A 淨值與持股歷史趨勢</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; }
-    h1 { text-align: center; color: #1a202c; }
-    .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .chart-wrapper { width: 100%; height: 500px; margin-top: 30px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1a202c;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-wrapper {
+      width: 100%;
+      height: 500px;
+      margin-top: 30px;
+    }
+
+    /* 新增表格樣式 */
+    .table-wrapper {
+      margin-top: 40px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .section-header {
+      background-color: #cbd5e1;
+      font-weight: bold;
+      text-align: left;
+      font-size: 1.1rem;
+      color: #1e293b;
+    }
+
+    .sub-section-header {
+      background-color: #f1f5f9;
+      font-weight: bold;
+      text-align: left;
+      color: #334155;
+    }
+
+    tbody tr:hover td {
+      background-color: #f1f5f9;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>00981A 淨值與持股趨勢儀表板</h1>
     <p style="text-align: center; color: #666;">來自自動化的每日爬蟲更新資料，顯示淨值與成分股權重比例</p>
     <div class="chart-wrapper">
       <canvas id="myChart"></canvas>
+    </div>
+    <div id="report-container">
+      <h2
+        style="margin-top: 40px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <span>持股變化分析報告</span>
+        <select id="reportSelector"
+          style="padding: 5px 10px; font-size: 1rem; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; cursor: pointer;"></select>
+      </h2>
+      <div id="reportTableContainer"></div>
     </div>
   </div>
 
@@ -26,23 +105,23 @@
       download: true,
       header: true,
       skipEmptyLines: true,
-      complete: function(results) {
+      complete: function (results) {
         // Data is usually sorted by date in descending order. Ensure chronological for charting
-        const data = results.data.sort((a,b) => new Date(a.date) - new Date(b.date));
-        
+        const data = results.data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
         const labels = data.map(row => row.date);
-        
+
         // Ensure values are parsed cleanly
         const navValues = data.map(row => {
-            let val = row['每受益權單位淨資產價值(元)'];
-            return val ? parseFloat(val) : null;
+          let val = row['每受益權單位淨資產價值(元)'];
+          return val ? parseFloat(val) : null;
         });
-        
+
         const totalIssued = data.map(row => {
-            let val = row['已發行受益權單位總數'];
-            return val ? (parseFloat(val) / 100000000) : null; // 轉換為「億」為單位
+          let val = row['已發行受益權單位總數'];
+          return val ? (parseFloat(val) / 100000000) : null; // 轉換為「億」為單位
         });
-        
+
         const ctx = document.getElementById('myChart').getContext('2d');
         new Chart(ctx, {
           type: 'line',
@@ -85,7 +164,7 @@
                 display: true,
                 position: 'left',
                 title: { display: true, text: '每單位淨值 (元)' },
-                suggestedMin: Math.min(...navValues.filter(n=>n!=null)) * 0.95
+                suggestedMin: Math.min(...navValues.filter(n => n != null)) * 0.95
               },
               y2: {
                 type: 'linear',
@@ -99,6 +178,93 @@
         });
       }
     });
+
+    // 載入持股變化分析 CSV
+    Papa.parse("ETF_00981A 持股分析變化.csv", {
+      download: true,
+      header: false,
+      skipEmptyLines: true,
+      complete: function (results) {
+        const data = results.data;
+        if (!data || data.length === 0) return;
+
+        const headers = data[0]; // 第一列是標題列
+        const sections = [];
+        let currentSection = null;
+
+        // 從第 2 列開始，把資料依照 [最近一日]、[最近一周] 等主標題切分
+        for (let i = 1; i < data.length; i++) {
+          const row = data[i];
+          let nonEmpties = row.filter(c => c.trim() !== '');
+
+          if (nonEmpties.length === 1 && row[0] && row[0].startsWith('[')) {
+            // 發現新的主區段
+            currentSection = {
+              title: row[0],
+              rows: []
+            };
+            sections.push(currentSection);
+          } else if (currentSection) {
+            // 空白列略過
+            if (nonEmpties.length === 0) continue;
+            currentSection.rows.push(row);
+          }
+        }
+
+        const selector = document.getElementById('reportSelector');
+        const tableContainer = document.getElementById('reportTableContainer');
+
+        if (sections.length === 0) return;
+
+        // 填入下拉選單選項
+        sections.forEach((sec, idx) => {
+          const option = document.createElement('option');
+          option.value = idx;
+          option.text = sec.title;
+          selector.appendChild(option);
+        });
+
+        // 繪製對應區段的表格
+        function renderSection(index) {
+          const sec = sections[index];
+          let html = '<div class="table-wrapper"><table>';
+
+          html += '<thead><tr>';
+          headers.forEach(cell => html += `<th>${cell}</th>`);
+          html += '</tr></thead><tbody>';
+
+          sec.rows.forEach(row => {
+            let nonEmpties = row.filter(c => c.trim() !== '');
+            if (nonEmpties.length === 1) {
+              html += '<tr>';
+              if (row[1] && row[1].startsWith('---')) {
+                html += `<td colspan="${row.length}" class="sub-section-header">${row[1]}</td>`;
+              } else {
+                html += `<td colspan="${row.length}" style="background:#f8fafc; font-weight:bold;">${nonEmpties[0]}</td>`;
+              }
+              html += '</tr>';
+            } else {
+              html += '<tr>';
+              row.forEach(cell => {
+                html += `<td>${cell}</td>`;
+              });
+              html += '</tr>';
+            }
+          });
+          html += '</tbody></table></div>';
+          tableContainer.innerHTML = html;
+        }
+
+        // 監聽選單改變
+        selector.addEventListener('change', (e) => {
+          renderSection(e.target.value);
+        });
+
+        // 預設渲染第一個區段
+        renderSection(0);
+      }
+    });
   </script>
 </body>
+
 </html>
