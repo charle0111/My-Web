@@ -13,10 +13,9 @@ from selenium.webdriver.support.ui import Select
 
 # ===== 設定參數 =====
 target_etfs = ["00981A"]  # 設定要抓取的特定 ETF 代號或名稱，若為空清單 [] 則全部抓取
-target_stocks = ["台積電", "台光電"] # 設定要想擷取持股權重的特定股票名稱
 incremental = True  # True = 只抓新的日期；False = 全部日期都抓
 days_to_fetch = 90  # 往前推算的天數
-file_name = "ezmoney_00981A_history.csv"
+file_name = "ETF_00981A 持股分析.csv"
 
 def to_roc_date(dt):
     """將西元年轉為民國年字串 (例如: 115/03/24)"""
@@ -172,23 +171,7 @@ for etf in etf_options:
                     "每受益權單位淨資產價值(元)": nav_per_unit if nav_per_unit else ""
                 }
                 
-                # 抓取特定股票的持股權重
-                for stock in target_stocks:
-                    weight = ""
-                    # 尋找有該股票名稱的標籤
-                    stock_th_td = soup.find(string=lambda t: t and stock in t)
-                    if stock_th_td:
-                        tr = stock_th_td.find_parent("tr")
-                        if tr:
-                            tds = tr.find_all(['td', 'th'])
-                            # 從後往前找包含 % 的欄位，通常最後一欄或倒數第二欄是權重
-                            for td in reversed(tds):
-                                if "%" in td.text:
-                                    weight = td.text.strip()
-                                    break
-                    row_data[f"{stock}持股權重"] = weight
-                
-                # 抓取所有持有的股票名稱與對應股數
+                # 抓取所有持有的股票名稱、對應股數與權重
                 tables = soup.find_all("table")
                 for t in tables:
                     rows = t.find_all("tr")
@@ -205,6 +188,16 @@ for etf in etf_options:
                                     shares = cols[shares_idx].replace(",", "")
                                     if stock_name:
                                         row_data[f"{stock_name}股數"] = shares
+                                        
+                                        # 從後往前找包含 % 的欄位作為權重
+                                        weight = ""
+                                        for td_text in reversed(cols):
+                                            if "%" in td_text:
+                                                weight = td_text
+                                                break
+                                        if weight:
+                                            row_data[f"{stock_name}持股權重"] = weight
+                                            
                             found = True
                             break
                     if found:
