@@ -233,6 +233,8 @@ for etf in etf_options:
                 all_new_data.append(row_data)
             else:
                 print("無資料")
+                # 記錄「無資料」的日期，避免下次執行時重複查詢
+                all_new_data.append({"date": date_str, "etf_name": etf['text'], "nav_value": ""})
                 
         except Exception as e:
             print(f"發生錯誤: {e}")
@@ -255,7 +257,7 @@ if not new_df.empty:
         
     try:
         final_df.to_csv(file_name, index=False, encoding='utf_8_sig')
-        print(f"完成！已將 {len(new_df)} 筆新資料寫入至 {file_name}")
+        print(f"完成！有效新資料 {len(new_df[new_df['nav_value'].astype(str).str.strip() != ''])} 筆，無資料占位 {len(new_df[new_df['nav_value'].astype(str).str.strip() == ''])} 筆，已寫入 {file_name}")
     except Exception as e:
         print(f"儲存發生錯誤: {e}")
 else:
