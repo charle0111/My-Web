@@ -125,11 +125,14 @@ for etf in etf_options:
         print(f"抓取: {date_str} (ROC: {roc_date})... ", end="")
         
         try:
-            # 填入日期: 先清空輸入框再直接鍵入民國年日期字串
+            # 填入日期: 先將元素捲動到畫面中央，避免頂部 navbar 遮擋
             from selenium.webdriver.common.keys import Keys
             date_input = driver.find_element(By.ID, "ED")
-            date_input.click()
-            time.sleep(0.2)
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", date_input)
+            time.sleep(0.15)
+            # 用 JS focus 避免原生 click 發生 ElementClickInterceptedException
+            driver.execute_script("arguments[0].focus(); arguments[0].select();", date_input)
+            time.sleep(0.15)
             date_input.send_keys(Keys.CONTROL + "a")
             date_input.send_keys(Keys.DELETE)
             time.sleep(0.1)
