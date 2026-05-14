@@ -29,7 +29,6 @@ jobs:
 
     - name: Run Scraper
       run: |
-        python ETF規模分析.py
         python "ETF_00981A 持股分析.py"
         python "ETF_00981A 持股分析變化.py"
 
