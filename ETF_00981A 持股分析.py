@@ -12,10 +12,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
 # ===== 設定參數 =====
-target_etfs = ["00981A"]  # 設定要抓取的特定 ETF 代號或名稱，若為空清單 [] 則全部抓取
+target_etfs = ["00981A", "00403A"]  # 同時抓取多檔 ETF
+etf_file_map = {
+    "00981A": "ETF_00981A 持股分析.csv",
+    "00403A": "ETF_00403A 持股分析.csv",
+}
 incremental = True  # True = 只抓新的日期；False = 全部日期都抓
 days_to_fetch = 90  # 往前推算的天數
-file_name = "ETF_00981A 持股分析.csv"
 
 def to_roc_date(dt):
     """將西元年轉為民國年字串 (例如: 115/03/24)"""
@@ -82,16 +85,17 @@ for i in range(days_to_fetch):
 
 print(f"預計查詢 {len(date_list)} 個營業日")
 
-# ===== 讀取舊資料 =====
-if os.path.exists(file_name):
-    try:
-        old_df = pd.read_csv(file_name)
-        print(f"已有歷史資料，共 {len(old_df)} 筆")
-    except Exception as e:
-        print(f"讀取舊資料失敗 ({e})，重新建立 DataFrame")
-        old_df = pd.DataFrame(columns=["date", "etf_name", "nav_value"])
-else:
-    old_df = pd.DataFrame(columns=["date", "etf_name", "nav_value"])
+# ===== 讀取舊資料（合併所有 ETF 的 CSV，供增量檢查用）=====
+old_dfs = []
+for code, fname in etf_file_map.items():
+    if os.path.exists(fname):
+        try:
+            df = pd.read_csv(fname)
+            print(f"[{code}] 已有歷史資料，共 {len(df)} 筆")
+            old_dfs.append(df)
+        except Exception as e:
+            print(f"[{code}] 讀取舊資料失敗 ({e})")
+old_df = pd.concat(old_dfs, ignore_index=True) if old_dfs else pd.DataFrame(columns=["date", "etf_name", "nav_value"])
 
 all_new_data = []
 
@@ -159,19 +163,23 @@ for etf in etf_options:
 
             # 讀取並解析資料
             soup = BeautifulSoup(driver.page_source, "html.parser")
-            
+            page_text = soup.text.replace(chr(10), ' ')
+
+            # ── 日期驗證：確認頁面確實顯示我們查詢的日期 ──────────────
+            date_in_page = roc_date in page_text
+            if IN_CI:
+                print(f"[debug] roc_date='{roc_date}' in page: {date_in_page}", end=" | ")
+
+            if not date_in_page:
+                # 頁面未更新（可能是網站回應延遲），跳過此日期，下次再試
+                print("頁面未更新，略過")
+                continue
+            # ────────────────────────────────────────────────────────────
+
             nav_value = None
             total_issued = None
             nav_per_unit = None
-            
-            page_text = soup.text.replace(chr(10), ' ')
-            
-            # 在 CI 模式下印出 debug 資訊
-            if IN_CI:
-                # 印出頁面中是否含有我們查詢的日期，幫助直接諮斷問題
-                date_in_page = roc_date in page_text
-                print(f"[debug] roc_date='{roc_date}' in page: {date_in_page}", end=" | ")
-            
+
             # 擷取 "基金淨資產價值(元)"
             match1 = re.search(r'基金淨資產價值\(元\)\s*(?:NTD|TWD)?\s*([\d,\.]+)', page_text)
             if match1:
@@ -233,32 +241,49 @@ for etf in etf_options:
                 all_new_data.append(row_data)
             else:
                 print("無資料")
-                # 記錄「無資料」的日期，避免下次執行時重複查詢
+                # 頁面有顯示此日期但查無資料，記錄占位列避免下次重複查詢
                 all_new_data.append({"date": date_str, "etf_name": etf['text'], "nav_value": ""})
                 
         except Exception as e:
             print(f"發生錯誤: {e}")
 
+
 print("\n關閉瀏覽器")
 driver.quit()
 
-# ===== 處理與儲存資料 =====
+# ===== 處理與儲存資料（分別儲存至各自 CSV）=====
 new_df = pd.DataFrame(all_new_data)
 
 if not new_df.empty:
-    if not old_df.empty:
-        # 合併並去重
-        final_df = pd.concat([old_df, new_df], ignore_index=True)
-        final_df = final_df.drop_duplicates(subset=['date', 'etf_name'], keep='last')
-        final_df = final_df.sort_values(by=['etf_name', 'date'], ascending=[True, False])
-    else:
-        final_df = new_df
-        final_df = final_df.sort_values(by=['etf_name', 'date'], ascending=[True, False])
-        
-    try:
-        final_df.to_csv(file_name, index=False, encoding='utf_8_sig')
-        print(f"完成！有效新資料 {len(new_df[new_df['nav_value'].astype(str).str.strip() != ''])} 筆，無資料占位 {len(new_df[new_df['nav_value'].astype(str).str.strip() == ''])} 筆，已寫入 {file_name}")
-    except Exception as e:
-        print(f"儲存發生錯誤: {e}")
+    for code, fname in etf_file_map.items():
+        # 筛選該 ETF 的新資料
+        mask = new_df['etf_name'].str.contains(code, na=False)
+        etf_new = new_df[mask]
+        if etf_new.empty:
+            print(f"[{code}] 本次無新資料")
+            continue
+
+        # 讀取該 ETF 的舊 CSV
+        if os.path.exists(fname):
+            try:
+                etf_old = pd.read_csv(fname)
+            except:
+                etf_old = pd.DataFrame(columns=["date", "etf_name", "nav_value"])
+        else:
+            etf_old = pd.DataFrame(columns=["date", "etf_name", "nav_value"])
+
+        # 合並並去重
+        etf_final = pd.concat([etf_old, etf_new], ignore_index=True)
+        etf_final = etf_final.drop_duplicates(subset=['date', 'etf_name'], keep='last')
+        etf_final = etf_final.sort_values(by=['date'], ascending=False)
+
+        # 儲存
+        try:
+            etf_final.to_csv(fname, index=False, encoding='utf_8_sig')
+            real = len(etf_new[etf_new['nav_value'].astype(str).str.strip() != ''])
+            empty = len(etf_new) - real
+            print(f"[{code}] 完成！有效 {real} 筆，無資料占位 {empty} 筆，已寫入 {fname}")
+        except Exception as e:
+            print(f"[{code}] 儲存發生錯誤: {e}")
 else:
     print("本次無新資料需更新。")
