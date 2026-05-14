@@ -1,7 +1,7 @@
 import os
 import time
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pandas as pd
 from bs4 import BeautifulSoup
 
@@ -21,6 +21,8 @@ def to_roc_date(dt):
     """將西元年轉為民國年字串 (例如: 115/03/24)"""
     year = dt.year - 1911
     return f"{year:03d}/{dt.month:02d}/{dt.day:02d}"
+
+TAIWAN_TZ = timezone(timedelta(hours=8))  # 台灣時區 UTC+8
 
 print("啟動瀏覽器")
 IN_CI = os.getenv("GITHUB_ACTIONS") == "true"
@@ -73,9 +75,9 @@ except Exception as e:
 # ===== 準備日期清單 =====
 date_list = []
 for i in range(days_to_fetch):
-    d = datetime.now() - timedelta(days=i)
-    # 略過六日 (5=Saturday, 6=Sunday)
-    if d.weekday() < 5:
+    d = datetime.now(TAIWAN_TZ) - timedelta(days=i)  # 使用台灣時間
+    # 略過星期日 (6=Sunday)；星期六保留
+    if d.weekday() != 6:
         date_list.append(d)
 
 print(f"預計查詢 {len(date_list)} 個營業日")
