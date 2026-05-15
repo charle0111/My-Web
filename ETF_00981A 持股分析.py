@@ -130,12 +130,19 @@ for etf in etf_options:
             date_input = driver.find_element(By.ID, "ED")
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", date_input)
             time.sleep(0.15)
-            # 用 JS focus 避免原生 click 發生 ElementClickInterceptedException
+            
+            # 確保在 CI (Linux) 環境下能完全清空輸入框
+            # 1. 透過 JS 強制清空
+            driver.execute_script("arguments[0].value = '';", date_input)
+            # 2. 透過原生 clear()
+            date_input.clear()
+            # 3. 透過全選刪除 (涵蓋不同瀏覽器行為)
             driver.execute_script("arguments[0].focus(); arguments[0].select();", date_input)
-            time.sleep(0.15)
-            date_input.send_keys(Keys.CONTROL + "a")
-            date_input.send_keys(Keys.DELETE)
             time.sleep(0.1)
+            date_input.send_keys(Keys.CONTROL + "a")
+            date_input.send_keys(Keys.BACKSPACE)
+            time.sleep(0.1)
+            
             date_input.send_keys(roc_date)
             time.sleep(0.3)
             
@@ -152,7 +159,7 @@ for etf in etf_options:
                 )
             except:
                 pass
-            wait_time = 2.5 if IN_CI else 1.0
+            wait_time = 4.0 if IN_CI else 1.5
             time.sleep(wait_time)  # 確保資料已渲染
             
             # 檢查是否有 alert 彈出 (例如: 查無資料)
@@ -169,11 +176,24 @@ for etf in etf_options:
             page_text = soup.text.replace(chr(10), ' ')
 
             # ── 日期驗證：確認頁面確實顯示我們查詢的日期 ──────────────
+            # 方法1: 公告標題中直接包含查詢日期（原本邏輯）
             date_in_page = roc_date in page_text
+            
+            # 方法2: 從「上傳時間」欄位取得日期來比對
+            # 網站有時公告標題顯示未來生效日（如 115/05/18），
+            # 但「上傳時間」才是實際上傳日（如 115/05/15 16:31:00）
+            upload_date_match = re.search(r'上傳時間[：:]?\s*(\d{3}/\d{2}/\d{2})', page_text)
+            upload_date_ok = False
+            if upload_date_match:
+                upload_roc_date = upload_date_match.group(1)  # e.g. "115/05/15"
+                upload_date_ok = (upload_roc_date == roc_date)
+                if IN_CI:
+                    print(f"[debug] upload_date='{upload_roc_date}' match: {upload_date_ok}", end=" | ")
+            
             if IN_CI:
-                print(f"[debug] roc_date='{roc_date}' in page: {date_in_page}", end=" | ")
+                print(f"[debug] roc_date='{roc_date}' in page: {date_in_page}, upload_ok: {upload_date_ok}", end=" | ")
 
-            if not date_in_page:
+            if not date_in_page and not upload_date_ok:
                 # 頁面未更新（可能是網站回應延遲），跳過此日期，下次再試
                 print("頁面未更新，略過")
                 continue
