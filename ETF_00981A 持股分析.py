@@ -202,15 +202,29 @@ for etf in etf_options:
             upload_roc_date = None
             if upload_date_match:
                 upload_roc_date = upload_date_match.group(1)  # e.g. "115/05/15"
-                upload_date_ok = (upload_roc_date == roc_date)
+                
+                # 放寬驗證：有些 ETF (如 00403A) 資料上傳日為生效日的前一個營業日
+                try:
+                    u_year = int(upload_roc_date.split("/")[0]) + 1911
+                    u_month = int(upload_roc_date.split("/")[1])
+                    u_day = int(upload_roc_date.split("/")[2])
+                    u_dt = datetime(u_year, u_month, u_day, tzinfo=TAIWAN_TZ)
+                    diff_days = (dt - u_dt).days
+                    
+                    # 只要上傳日期在查詢日期的 5 天內 (涵蓋週末或連假)，就視為該查詢的有效對應資料
+                    if 0 <= diff_days <= 5:
+                        upload_date_ok = True
+                except:
+                    upload_date_ok = (upload_roc_date == roc_date)
+                    
                 if IN_CI:
-                    print(f"[debug] upload_date='{upload_roc_date}' match: {upload_date_ok}", end=" | ")
+                    print(f"[debug] upload_date='{upload_roc_date}' match_ok: {upload_date_ok}", end=" | ")
             
             if IN_CI:
                 print(f"[debug] roc_date='{roc_date}' in page: {date_in_page}, upload_ok: {upload_date_ok}", end=" | ")
 
             if not date_in_page and not upload_date_ok:
-                # 頁面未更新（可能是網站回應延遲），跳過此日期，下次再試
+                # 頁面未更新（可能是網站回應延遲或抓到過舊預設資料），跳過此日期，下次再試
                 print("頁面未更新，略過")
                 continue
             
