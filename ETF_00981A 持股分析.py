@@ -25,6 +25,12 @@ def to_roc_date(dt):
     year = dt.year - 1911
     return f"{year:03d}/{dt.month:02d}/{dt.day:02d}"
 
+def roc_to_western_date(roc_str):
+    """將民國年字串 (例如: 115/03/24) 轉為西元 YYYY-MM-DD"""
+    parts = roc_str.split("/")
+    year = int(parts[0]) + 1911
+    return f"{year}-{parts[1]}-{parts[2]}"
+
 TAIWAN_TZ = timezone(timedelta(hours=8))  # 台灣時區 UTC+8
 
 print("啟動瀏覽器")
@@ -76,6 +82,7 @@ except Exception as e:
     exit()
 
 # ===== 準備日期清單 =====
+today_str = datetime.now(TAIWAN_TZ).strftime("%Y-%m-%d")  # 今天的西元日期，供增量跳過判斷用
 date_list = []
 for i in range(days_to_fetch):
     d = datetime.now(TAIWAN_TZ) - timedelta(days=i)  # 使用台灣時間
@@ -117,10 +124,18 @@ for etf in etf_options:
         date_str = dt.strftime("%Y-%m-%d")
         
         # 檢查是否已存在 (若採增量更新)
-        if incremental and not old_df.empty:
-            if not old_df[(old_df['etf_name'] == etf['text']) & (old_df['date'] == date_str)].empty:
-                print(f"[{date_str}] 已存在，跳過")
-                continue
+        # 例外情況：
+        #   1. 今天的日期永遠重試 (當天資料可能隨時更新)
+        #   2. 過去有空占位列 (nav_value 為空) 的日期也重試 (上次未取得資料)
+        if incremental and not old_df.empty and date_str != today_str:
+            existing = old_df[(old_df['etf_name'] == etf['text']) & (old_df['date'] == date_str)]
+            if not existing.empty:
+                has_real_data = existing['nav_value'].astype(str).str.strip().ne('').any()
+                if has_real_data:
+                    print(f"[{date_str}] 已存在，跳過")
+                    continue
+                else:
+                    print(f"[{date_str}] 之前無資料，重新嘗試... ", end="")
                 
         print(f"抓取: {date_str} (ROC: {roc_date})... ", end="")
         
@@ -184,6 +199,7 @@ for etf in etf_options:
             # 但「上傳時間」才是實際上傳日（如 115/05/15 16:31:00）
             upload_date_match = re.search(r'上傳時間[：:]?\s*(\d{3}/\d{2}/\d{2})', page_text)
             upload_date_ok = False
+            upload_roc_date = None
             if upload_date_match:
                 upload_roc_date = upload_date_match.group(1)  # e.g. "115/05/15"
                 upload_date_ok = (upload_roc_date == roc_date)
@@ -197,6 +213,14 @@ for etf in etf_options:
                 # 頁面未更新（可能是網站回應延遲），跳過此日期，下次再試
                 print("頁面未更新，略過")
                 continue
+            
+            # 優先使用「上傳時間」作為 CSV 記錄的日期（比公告標題日期更準確）
+            # 上傳時間 = 資料實際上傳日；公告標題 = ETF 申購買回生效日（可能是未來日期）
+            if upload_roc_date:
+                actual_date_str = roc_to_western_date(upload_roc_date)  # e.g. "2026-05-15"
+            else:
+                actual_date_str = date_str  # fallback: 使用查詢日期
+            print(f"(上傳日:{actual_date_str}) ", end="")
             # ────────────────────────────────────────────────────────────
 
             nav_value = None
@@ -222,7 +246,7 @@ for etf in etf_options:
                 print(nav_value)
                 
                 row_data = {
-                    "date": date_str,
+                    "date": actual_date_str,
                     "etf_name": etf['text'],
                     "nav_value": nav_value,
                     "已發行受益權單位總數": total_issued if total_issued else "",
@@ -265,7 +289,7 @@ for etf in etf_options:
             else:
                 print("無資料")
                 # 頁面有顯示此日期但查無資料，記錄占位列避免下次重複查詢
-                all_new_data.append({"date": date_str, "etf_name": etf['text'], "nav_value": ""})
+                all_new_data.append({"date": actual_date_str, "etf_name": etf['text'], "nav_value": ""})
                 
         except Exception as e:
             print(f"發生錯誤: {e}")
