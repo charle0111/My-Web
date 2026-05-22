@@ -827,21 +827,25 @@
                 <div class="ai-hero-card">
                     <span class="ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI 智慧分析洞察</span>
                     <div class="ai-summary-text">
-                        今日美股大盤展現微幅上揚趨勢，道瓊工業指數領漲，標普500與那斯達克指數亦同步收紅，顯示市場在經歷近期波動後略有喘息。波動率指數 (VIX) 下跌，則反映出短期市場恐慌情緒有所緩和。然而，儘管科技巨頭如蘋果表現亮眼，輝達卻逆勢下跌，部分反映市場對科技股的獲利了結壓力。值得注意的是，華爾街對於市場估值過高及未來波動加劇的警示聲浪浮現，且有房市困境的擔憂，但OpenAI潛在的IPO消息為市場注入一劑強心針，共同交織出一個複雜且帶有潛在變數的交易日。
+                        目前正以標準聚合模式運行。請至 <code>config.json</code> 中配置您的 <code>gemini_api_key</code> 以啟用由 Gemini 驅動的每日美股深度中文情緒分析、新聞翻譯與關鍵亮點整理。
                     </div>
                     <ul class="ai-bullets">
-                        <li>美股主要指數普遍收紅，道瓊工業指數領漲，VIX指數下跌顯示短期市場恐慌情緒緩解，為市場帶來一絲正面訊號。</li><li>多則新聞警示市場估值過高與潛在波動加劇，包含「巴菲特指標」及房市困境等，預示投資者需對未來風險保持警惕。</li><li>OpenAI傳出將機密申請IPO，為AI概念股及整體科技市場注入興奮劑，但輝達股價逆勢下跌，顯示市場對部分科技股仍有獲利了結壓力。</li>
+                        
+        <li><b>如何啟用 AI 功能？</b> 在專案目錄下的 <code>config.json</code> 中，將 <code>gemini_api_key</code> 欄位填入您的 Gemini API 金鑰。</li>
+        <li><b>標準模式限制</b>：本報告中的新聞標題與內容為英文原文，且無情緒標籤，部分解讀功能受限。</li>
+        <li><b>指數與經濟數據</b>：大盤指數與今日美國經濟指標依舊能正常即時獲取。</li>
+        
                     </ul>
                     
                     <!-- Sentiment Gauge -->
                     <div class="sentiment-container">
                         <div class="sentiment-meta">
                             <span class="sentiment-label"><i class="fa-solid fa-gauge-high"></i> 今日市場情緒綜合評估</span>
-                            <span class="sentiment-value bullish">偏向樂觀</span>
+                            <span class="sentiment-value neutral">中性觀望 (標準模式)</span>
                         </div>
                         <div class="gauge-bar-wrapper">
                             <div class="gauge-bar"></div>
-                            <div class="gauge-pointer" style="left: 60%;"></div>
+                            <div class="gauge-pointer" style="left: 50%;"></div>
                         </div>
                         <div class="gauge-labels">
                             <span><i class="fa-solid fa-face-frown-open"></i> 極度悲觀</span>
@@ -860,7 +864,7 @@
 
                     <!-- Interactive Filtering Bar (Vanilla JS enabled) -->
                     <div class="news-filter-bar">
-                        <button class="filter-btn active" onclick="filterNews('all')">全部新聞 (6)</button>
+                        <button class="filter-btn active" onclick="filterNews('all')">全部新聞 (12)</button>
                         <button class="filter-btn" onclick="filterNews('high')">高影響力</button>
                         <button class="filter-btn" onclick="filterNews('bullish')">看多情緒</button>
                         <button class="filter-btn" onclick="filterNews('bearish')">看空情緒</button>
@@ -869,21 +873,21 @@
 
                     <div class="news-list" id="news-stream">
                         
-            <div class="news-card glass-card" data-sentiment="bearish" data-impact="medium">
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
                 <div class="news-card-header">
                     <div class="news-meta-left">
                         <span class="news-source">Yahoo Finance US Market</span>
                         <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
                     </div>
                     <div class="news-badges">
-                        <span class="badge-sentiment bearish"><i class="fa-solid fa-circle-half-stroke"></i> 看空情緒</span>
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
                         <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://finance.yahoo.com/markets/stocks/article/lowes-ceo-says-this-is-the-most-difficult-housing-market-since-the-financial-crisis-170512082.html" target="_blank" class="news-title">勞氏（Lowe's）執行長表示：這是金融危機以來「最艱困的房市」</a>
-                <div class="news-summary">房屋零售巨頭執行長的言論，揭示當前房市面臨嚴重挑戰，可能對相關產業鏈及消費者支出造成負面影響。</div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/earn-q4-2025-earnings-transcript-172151149.html" target="_blank" class="news-title">EARN Q4 2025 Earnings Transcript</a>
+                <div class="news-summary"></div>
                 <div class="news-footer">
-                    <a href="https://finance.yahoo.com/markets/stocks/article/lowes-ceo-says-this-is-the-most-difficult-housing-market-since-the-financial-crisis-170512082.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/earn-q4-2025-earnings-transcript-172151149.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
@@ -898,82 +902,190 @@
                         <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://finance.yahoo.com/markets/stocks/articles/cloudflare-net-q1-results-beat-170757361.html" target="_blank" class="news-title">Cloudflare (NET) 第一季財報優於預期，但市場反應參雜多空訊息</a>
-                <div class="news-summary">雲端服務商 Cloudflare 財報表現超出市場預期，然而市場對此的反應不一，可能反映投資者對未來指引或估值的疑慮，影響市場解讀。</div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/lrcx-overweight-lam-research-poised-172518864.html" target="_blank" class="news-title">LRCX Overweight: How Lam Research Is Poised to Outperform the $149B WFE Market</a>
+                <div class="news-summary"></div>
                 <div class="news-footer">
-                    <a href="https://finance.yahoo.com/markets/stocks/articles/cloudflare-net-q1-results-beat-170757361.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/lrcx-overweight-lam-research-poised-172518864.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
-            <div class="news-card glass-card" data-sentiment="bullish" data-impact="high">
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
                 <div class="news-card-header">
                     <div class="news-meta-left">
                         <span class="news-source">Yahoo Finance US Market</span>
                         <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
                     </div>
                     <div class="news-badges">
-                        <span class="badge-sentiment bullish"><i class="fa-solid fa-circle-half-stroke"></i> 看多情緒</span>
-                        <span class="badge-impact high"><i class="fa-solid fa-bolt"></i> 高影響力</span>
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-filing-ipo-soon-165822705.html" target="_blank" class="news-title">OpenAI 傳最快本週將機密提交 IPO 申請</a>
-                <div class="news-summary">人工智慧巨頭 OpenAI 的 IPO 消息，將為整體科技板塊和 AI 概念股帶來強勁的利多刺激，提振市場信心。</div>
+                <a href="https://finance.yahoo.com/personal-finance/mortgages/article/subject-to-mortgage-172248938.html" target="_blank" class="news-title">What is a subject-to mortgage?</a>
+                <div class="news-summary"></div>
                 <div class="news-footer">
-                    <a href="https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-filing-ipo-soon-165822705.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    <a href="https://finance.yahoo.com/personal-finance/mortgages/article/subject-to-mortgage-172248938.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
-            <div class="news-card glass-card" data-sentiment="bearish" data-impact="high">
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/commodities/articles/corn-facing-crude-oil-pressure-172527728.html" target="_blank" class="news-title">Corn Facing Crude Oil Pressure on Wednesday</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/commodities/articles/corn-facing-crude-oil-pressure-172527728.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/wall-street-bullish-walmart-stock-172844809.html" target="_blank" class="news-title">Wall Street Is Bullish on Walmart Stock Ahead of Earnings. I Recommend Waiting for a Pullback to Buy.</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/wall-street-bullish-walmart-stock-172844809.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/corvel-crvl-q4-2026-earnings-172414704.html" target="_blank" class="news-title">CorVel (CRVL) Q4 2026 Earnings Call Transcript</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/corvel-crvl-q4-2026-earnings-172414704.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/wall-street-warming-servicenow-stock-171508632.html" target="_blank" class="news-title">Wall Street Is Warming Up to ServiceNow Stock. That’s Because It’s Now a Bet on Agentic AI.</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/wall-street-warming-servicenow-stock-171508632.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://www.investors.com/research/ibd-stock-of-the-day/quanta-services-stock-buy-point/?src=A00220&yptr=yahoo" target="_blank" class="news-title">Quanta Services, IBD Stock Of The Day, Forges New Buy Point In AI Pullback</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://www.investors.com/research/ibd-stock-of-the-day/quanta-services-stock-buy-point/?src=A00220&yptr=yahoo" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
                 <div class="news-card-header">
                     <div class="news-meta-left">
                         <span class="news-source">MarketWatch Top Stories</span>
                         <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
                     </div>
                     <div class="news-badges">
-                        <span class="badge-sentiment bearish"><i class="fa-solid fa-circle-half-stroke"></i> 看空情緒</span>
-                        <span class="badge-impact high"><i class="fa-solid fa-bolt"></i> 高影響力</span>
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://www.marketwatch.com/story/buffett-indicator-warns-of-a-market-top-8-crucial-signs-that-stocks-are-running-on-fumes-12e4b4d8?mod=mw_rss_topstories" target="_blank" class="news-title">「巴菲特指標」警告市場見頂 — 股市燃燒殆盡的 8 個關鍵跡象</a>
-                <div class="news-summary">這則報導引用「巴菲特指標」與多項數據，強烈警示當前股市估值過高，存在潛在泡沫風險，引發投資者對市場頂部的擔憂。</div>
+                <a href="https://www.marketwatch.com/story/buffett-indicator-warns-of-a-market-top-8-crucial-signs-that-stocks-are-running-on-fumes-12e4b4d8?mod=mw_rss_topstories" target="_blank" class="news-title">‘Buffett Indicator’ warns of a market top — 8 crucial signs that stocks are running on fumes</a>
+                <div class="news-summary">From a grotesque 230% valuation gap to a ticking energy crisis, this unstoppable market is more fragile than it looks.</div>
                 <div class="news-footer">
                     <a href="https://www.marketwatch.com/story/buffett-indicator-warns-of-a-market-top-8-crucial-signs-that-stocks-are-running-on-fumes-12e4b4d8?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
-            <div class="news-card glass-card" data-sentiment="bearish" data-impact="high">
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
                 <div class="news-card-header">
                     <div class="news-meta-left">
                         <span class="news-source">MarketWatch Top Stories</span>
                         <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
                     </div>
                     <div class="news-badges">
-                        <span class="badge-sentiment bearish"><i class="fa-solid fa-circle-half-stroke"></i> 看空情緒</span>
-                        <span class="badge-impact high"><i class="fa-solid fa-bolt"></i> 高影響力</span>
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://www.marketwatch.com/story/stocks-tread-water-but-a-wave-of-volatility-is-building-3a337d90?mod=mw_rss_topstories" target="_blank" class="news-title">股市原地踏步 — 但一波波動性正在積聚</a>
-                <div class="news-summary">儘管短期市場走勢平穩，但技術分析訊號顯示潛在的市場波動正在增強，提示投資者未來可能面臨更大的不確定性。</div>
+                <a href="https://www.marketwatch.com/story/stocks-tread-water-but-a-wave-of-volatility-is-building-3a337d90?mod=mw_rss_topstories" target="_blank" class="news-title">Stocks tread water — but a wave of volatility is building</a>
+                <div class="news-summary">S&P 500 analysis shows technical sell signals are flashing despite Nvidia earnings hype.</div>
                 <div class="news-footer">
                     <a href="https://www.marketwatch.com/story/stocks-tread-water-but-a-wave-of-volatility-is-building-3a337d90?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
-            <div class="news-card glass-card" data-sentiment="bullish" data-impact="medium">
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
                 <div class="news-card-header">
                     <div class="news-meta-left">
                         <span class="news-source">MarketWatch Top Stories</span>
                         <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
                     </div>
                     <div class="news-badges">
-                        <span class="badge-sentiment bullish"><i class="fa-solid fa-circle-half-stroke"></i> 看多情緒</span>
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
                         <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://www.marketwatch.com/story/spacex-has-a-lot-riding-on-its-imminent-starship-rocket-launch-fd24bf48?mod=mw_rss_topstories" target="_blank" class="news-title">SpaceX 即將進行的星艦（Starship）火箭發射承載重任</a>
-                <div class="news-summary">SpaceX 星艦的成功發射對其 IPO 敘事及公司未來發展至關重要，為私人航太產業帶來高度關注，並可能影響潛在投資者情緒。</div>
+                <a href="https://www.marketwatch.com/story/spacex-has-a-lot-riding-on-its-imminent-starship-rocket-launch-fd24bf48?mod=mw_rss_topstories" target="_blank" class="news-title">SpaceX has a lot riding on its imminent Starship rocket launch</a>
+                <div class="news-summary">The launch, which could happen as soon as Friday, comes ahead of “an IPO that’s basing so much” on narrative and symbolism.</div>
                 <div class="news-footer">
                     <a href="https://www.marketwatch.com/story/spacex-has-a-lot-riding-on-its-imminent-starship-rocket-launch-fd24bf48?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">MarketWatch Top Stories</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://www.marketwatch.com/story/im-selling-my-1-million-maui-home-will-my-agent-charge-me-less-than-a-6-commission-ed06c0f1?mod=mw_rss_topstories" target="_blank" class="news-title">I’m selling my $1 million home. Will my agent really charge less than a 6% commission?</a>
+                <div class="news-summary">“I haven’t bought or sold property since the National Association of Realtors ruling that decoupled buyer’s and seller’s agent commissions.”</div>
+                <div class="news-footer">
+                    <a href="https://www.marketwatch.com/story/im-selling-my-1-million-maui-home-will-my-agent-charge-me-less-than-a-6-commission-ed06c0f1?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
@@ -1038,7 +1150,7 @@
                     <span class="ticker-price">$304.99</span>
                     <span class="ticker-pct">+0.91%</span>
                 </div>
-                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 蘋果公司股價上漲，顯示市場對其基本面或未來產品發展保持信心，吸引買盤進駐。</div>
+                
             </div>
             
             <div class="watchlist-card glass-card down" onclick="window.open('https://finance.yahoo.com/quote/NVDA', '_blank')" style="cursor: pointer;" title="點擊查看 輝達 (NVDA) 的詳細行情分析">
@@ -1053,7 +1165,7 @@
                     <span class="ticker-price">$219.51</span>
                     <span class="ticker-pct">-1.77%</span>
                 </div>
-                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 輝達股價逆勢下跌，可能受到獲利了結壓力或市場對其高估值的審視，顯示科技股內部存在分歧。</div>
+                
             </div>
             
             <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/TSLA', '_blank')" style="cursor: pointer;" title="點擊查看 特斯拉 (TSLA) 的詳細行情分析">
@@ -1068,7 +1180,7 @@
                     <span class="ticker-price">$417.85</span>
                     <span class="ticker-pct">+0.14%</span>
                 </div>
-                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 特斯拉股價微幅上揚，表現中規中矩，可能受到市場整體溫和情緒的帶動，等待後續催化劑。</div>
+                
             </div>
             
             <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/TSM', '_blank')" style="cursor: pointer;" title="點擊查看 台積電 ADR (TSM) 的詳細行情分析">
@@ -1252,7 +1364,7 @@
         <!-- FOOTER -->
         <footer>
             <div>美股晨間訊息自動聚合系統 &copy; 2026. Powered by Python, yFinance & Gemini 1.5 Flash.</div>
-            <div style="margin-top: 0.25rem;">報告生成時間：2026-05-22 13:03:36 | 本報告數據與 AI 分析僅供參考，不構成任何投資建議。</div>
+            <div style="margin-top: 0.25rem;">報告生成時間：2026-05-22 13:10:41 | 本報告數據與 AI 分析僅供參考，不構成任何投資建議。</div>
         </footer>
     </div>
 
