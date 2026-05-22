@@ -1,338 +1,430 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>ETF 淨值與持股歷史趨勢</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charle's 美股市場資訊分析 dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+        }
 
-    h1 {
-      text-align: center;
-      color: #1a202c;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            padding: 3rem 1.5rem;
+        }
 
-    /* ETF 切換選單 */
-    .etf-selector-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 16px 0 0;
-      justify-content: center;
-    }
+        .ambient-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+            top: -100px;
+            right: 15%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
+        }
 
-    .etf-selector-bar label {
-      font-weight: 600;
-      color: #475569;
-    }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
 
-    #etfSelector {
-      padding: 6px 14px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #94a3b8;
-      outline: none;
-      cursor: pointer;
-      background: #f8fafc;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
 
-    .chart-wrapper {
-      width: 100%;
-      height: 500px;
-      margin-top: 30px;
-    }
+        .header-icon {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 10px rgba(99, 102, 241, 0.4));
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
 
-    .table-wrapper {
-      margin-top: 40px;
-      overflow-x: auto;
-    }
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
 
-    th,
-    td {
-      padding: 10px 12px;
-      border: 1px solid #e2e8f0;
-      text-align: center;
-    }
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    th {
-      background-color: #f8fafc;
-      font-weight: 600;
-      color: #475569;
-    }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
 
-    .section-header {
-      background-color: #cbd5e1;
-      font-weight: bold;
-      text-align: left;
-      font-size: 1.1rem;
-      color: #1e293b;
-    }
+        /* Features Layout (Latest Report & ETF Dashboard) */
+        .features-section {
+            margin-bottom: 3.5rem;
+        }
 
-    .sub-section-header {
-      background-color: #f1f5f9;
-      font-weight: bold;
-      text-align: left;
-      color: #334155;
-    }
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
 
-    tbody tr:hover td {
-      background-color: #f1f5f9;
-    }
-  </style>
+        .section-title i {
+            color: #818cf8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            padding: 2.2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 290px;
+        }
+
+        /* Latest Report Card: Neon Purple */
+        .latest-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(88, 28, 135, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .latest-badge {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(99, 102, 241, 0.25));
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #c084fc;
+        }
+
+        /* ETF Dashboard Card: Neon Green */
+        .etf-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(6, 78, 59, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.1);
+        }
+
+        .etf-badge {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+            width: fit-content;
+        }
+
+        .feature-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+            background: linear-gradient(to right, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .latest-card .feature-card-title {
+            background: linear-gradient(to right, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .etf-card .feature-card-title {
+            background: linear-gradient(to right, #ffffff, #a7f3d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #ffffff;
+            padding: 0.9rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-latest {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-latest:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-etf {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-etf:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-action:active {
+            transform: translateY(1px);
+        }
+
+        /* History Section */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-card {
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+        }
+
+        .history-card-content {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .history-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            flex-grow: 1;
+        }
+
+        .history-date {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .history-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .history-arrow {
+            color: var(--text-muted);
+            transition: transform 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .history-card:hover .history-arrow {
+            color: #818cf8;
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 2rem 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+                min-height: 250px;
+            }
+            
+            .feature-card-title {
+                font-size: 1.8rem;
+            }
+            
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="container">
-    <h1>ETF 淨值與持股趨勢儀表板</h1>
-    <p style="text-align: center; color: #666;">來自自動化的每日爬蟲更新資料，顯示淨值與成分股權重比例</p>
+    <div class="ambient-glow"></div>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="header-icon"><i class="fa-solid fa-chart-line-up"></i></div>
+            <h1>美股市場深度分析 dashboard</h1>
+            <p class="subtitle">每日自動化晨報與 AI 情緒分析存檔庫</p>
+        </header>
 
-    <!-- ETF 切換選單 -->
-    <div class="etf-selector-bar">
-      <label for="etfSelector">選擇 ETF：</label>
-      <select id="etfSelector">
-        <option value="00981A">00981A 主動統一台股增長</option>
-        <option value="00403A">00403A 主動統一升級50</option>
-      </select>
+        <!-- FEATURES SECTION -->
+        <section class="features-section">
+            <h2 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 精選分析看板</h2>
+            <div class="features-grid">
+                <!-- Latest Report Card -->
+                <div class="glass-card feature-card latest-card">
+                    <div>
+                        <span class="feature-badge latest-badge"><i class="fa-solid fa-bolt"></i> Today's Report</span>
+                        <div class="feature-card-title">2026-05-22</div>
+                        <p class="feature-card-desc">
+                            今日美股市場指數、自選監控股行情、最新財經晨報及 AI Sentiment 深度情緒分析。
+                        </p>
+                    </div>
+                    <a href="reports/report_2026-05-22.html" class="btn-action btn-latest"><i class="fa-solid fa-book-open"></i> 閱讀完整分析報告</a>
+                </div>
+
+                <!-- ETF Dashboard Card -->
+                <div class="glass-card feature-card etf-card">
+                    <div>
+                        <span class="feature-badge etf-badge"><i class="fa-solid fa-chart-pie"></i> ETF Trend Dashboard</span>
+                        <div class="feature-card-title">ETF 趨勢</div>
+                        <p class="feature-card-desc">
+                            精選 ETF 歷史持股比例、淨值趨勢走勢及權重變化多維度可視化儀表板。
+                        </p>
+                    </div>
+                    <a href="ETF 淨值與持股趨勢儀表板.html" class="btn-action btn-etf"><i class="fa-solid fa-chart-line"></i> 進入 ETF 儀表板</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORICAL ARCHIVE -->
+        <section class="archive-section">
+            <h2 class="section-title"><i class="fa-solid fa-box-archive"></i> 歷史報告存檔</h2>
+            <div class="history-list">
+                
+        <a href="reports/report_2026-05-22.html" class="glass-card history-card" style="text-decoration: none; color: inherit;">
+            <div class="history-card-content">
+                <div class="history-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                <div class="history-info">
+                    <span class="history-date">2026-05-22</span>
+                    <span class="history-title">美股晨間股市訊息與情緒分析報告</span>
+                </div>
+                <div class="history-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </a>
+        
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>© 2026 Charle's Stock Dashboard. All rights reserved.</p>
+            <p style="margin-top: 0.4rem; font-size: 0.75rem;">系統採用 google-genai API 與 yfinance 每日自動更新</p>
+        </footer>
     </div>
-
-    <div class="chart-wrapper">
-      <canvas id="myChart"></canvas>
-    </div>
-    <div id="report-container">
-      <h2
-        style="margin-top: 40px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-        <span id="reportTitle">持股變化分析報告</span>
-        <select id="reportSelector"
-          style="padding: 5px 10px; font-size: 1rem; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; cursor: pointer;"></select>
-      </h2>
-      <div id="reportTableContainer"></div>
-    </div>
-  </div>
-
-  <script>
-    // ===================== ETF 資料來源設定 =====================
-    const ETF_MAP = {
-      '00981A': {
-        history: 'ETF_00981A 持股分析.csv',
-        changes: 'ETF_00981A 持股分析變化.csv',
-      },
-      '00403A': {
-        history: 'ETF_00403A 持股分析.csv',
-        changes: 'ETF_00403A 持股分析變化.csv',
-      },
-    };
-
-    let chartInstance = null;
-
-    // ===================== 載入圖表 =====================
-    function loadChart(etfCode) {
-      const { history } = ETF_MAP[etfCode];
-      Papa.parse(history, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function (results) {
-          // 過濾掉 nav_value 為空的占位列，然後依日期排序
-          const data = results.data
-            .filter(row => row['nav_value'] && row['nav_value'].trim() !== '')
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-          const labels = data.map(row => row.date);
-          const navValues = data.map(row => {
-            let val = row['每受益權單位淨資產價值(元)'];
-            return val ? parseFloat(val) : null;
-          });
-          const totalIssued = data.map(row => {
-            let val = row['已發行受益權單位總數'];
-            return val ? (parseFloat(val) / 100000000) : null;
-          });
-
-          const ctx = document.getElementById('myChart').getContext('2d');
-
-          // 銷毀舊圖表
-          if (chartInstance) {
-            chartInstance.destroy();
-            chartInstance = null;
-          }
-
-          chartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: labels,
-              datasets: [
-                {
-                  label: '每單位淨資產價值(元)',
-                  data: navValues,
-                  borderColor: '#4a90e2',
-                  backgroundColor: 'rgba(74, 144, 226, 0.1)',
-                  yAxisID: 'y',
-                  tension: 0.2,
-                  fill: true
-                },
-                {
-                  label: '發行單位總數 (億)',
-                  data: totalIssued,
-                  borderColor: '#2ecc71',
-                  backgroundColor: 'transparent',
-                  yAxisID: 'y2',
-                  borderDash: [5, 5],
-                  tension: 0.2
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              interaction: { mode: 'index', intersect: false },
-              scales: {
-                x: { title: { display: true, text: '日期' } },
-                y: {
-                  type: 'linear',
-                  display: true,
-                  position: 'left',
-                  title: { display: true, text: '每單位淨值 (元)' },
-                  suggestedMin: Math.min(...navValues.filter(n => n != null)) * 0.95
-                },
-                y2: {
-                  type: 'linear',
-                  display: true,
-                  position: 'right',
-                  title: { display: true, text: '單位總數 (億)' },
-                  grid: { drawOnChartArea: false }
-                }
-              }
-            }
-          });
-        }
-      });
-    }
-
-    // ===================== 載入持股變化報表 =====================
-    function loadReport(etfCode) {
-      const { changes } = ETF_MAP[etfCode];
-      const selector = document.getElementById('reportSelector');
-      const tableContainer = document.getElementById('reportTableContainer');
-
-      // 清空舊資料
-      selector.innerHTML = '';
-      tableContainer.innerHTML = '<p style="color:#999;">載入中...</p>';
-
-      Papa.parse(changes, {
-        download: true,
-        header: false,
-        skipEmptyLines: true,
-        complete: function (results) {
-          const data = results.data;
-          if (!data || data.length === 0) {
-            tableContainer.innerHTML = '<p style="color:#e53e3e;">找不到分析資料，請先執行 analyze_shares_change.py</p>';
-            return;
-          }
-
-          const headers = data[0];
-          const sections = [];
-          let currentSection = null;
-
-          for (let i = 1; i < data.length; i++) {
-            const row = data[i];
-            let nonEmpties = row.filter(c => c.trim() !== '');
-
-            if (nonEmpties.length === 1 && row[0] && row[0].startsWith('[')) {
-              currentSection = { title: row[0], rows: [] };
-              sections.push(currentSection);
-            } else if (currentSection) {
-              if (nonEmpties.length === 0) continue;
-              currentSection.rows.push(row);
-            }
-          }
-
-          if (sections.length === 0) {
-            tableContainer.innerHTML = '<p style="color:#e53e3e;">解析失敗，請確認 CSV 格式正確</p>';
-            return;
-          }
-
-          // 填入下拉選單
-          sections.forEach((sec, idx) => {
-            const option = document.createElement('option');
-            option.value = idx;
-            option.text = sec.title;
-            selector.appendChild(option);
-          });
-
-          function renderSection(index) {
-            const sec = sections[index];
-            let html = '<div class="table-wrapper"><table>';
-            html += '<thead><tr>';
-            headers.forEach(cell => html += `<th>${cell}</th>`);
-            html += '</tr></thead><tbody>';
-
-            sec.rows.forEach(row => {
-              let nonEmpties = row.filter(c => c.trim() !== '');
-              if (nonEmpties.length === 1) {
-                html += '<tr>';
-                if (row[1] && row[1].startsWith('---')) {
-                  html += `<td colspan="${row.length}" class="sub-section-header">${row[1]}</td>`;
-                } else {
-                  html += `<td colspan="${row.length}" style="background:#f8fafc; font-weight:bold;">${nonEmpties[0]}</td>`;
-                }
-                html += '</tr>';
-              } else {
-                html += '<tr>';
-                row.forEach(cell => { html += `<td>${cell}</td>`; });
-                html += '</tr>';
-              }
-            });
-            html += '</tbody></table></div>';
-            tableContainer.innerHTML = html;
-          }
-
-          selector.addEventListener('change', (e) => renderSection(e.target.value));
-          renderSection(0);
-        },
-        error: function () {
-          tableContainer.innerHTML = `<p style="color:#e53e3e;">讀取 ${changes} 失敗，請確認檔案存在</p>`;
-        }
-      });
-    }
-
-    // ===================== 切換 ETF =====================
-    function switchETF(etfCode) {
-      document.getElementById('reportTitle').textContent = `${etfCode} 持股變化分析報告`;
-      loadChart(etfCode);
-      loadReport(etfCode);
-    }
-
-    // 監聽 ETF 選單切換
-    document.getElementById('etfSelector').addEventListener('change', function () {
-      switchETF(this.value);
-    });
-
-    // 初始載入預設的第一個 ETF
-    switchETF(document.getElementById('etfSelector').value);
-  </script>
 </body>
-
-</html>
+    </html>
