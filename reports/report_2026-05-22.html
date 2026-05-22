@@ -827,10 +827,10 @@
                 <div class="ai-hero-card">
                     <span class="ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI 智慧分析洞察</span>
                     <div class="ai-summary-text">
-                        今日美股大盤呈現微幅上漲，道瓊指數領漲，標普與那斯達克指數亦同步收紅，波動率指數 VIX 下降顯示市場情緒趨於穩定。然而，在整體樂觀氛圍中，市場也面臨多重複雜訊號。OpenAI 傳出 IPO 消息為 AI 概念股注入興奮劑，但同時有「巴菲特指標」示警股市可能過熱，加上房市前景艱難的擔憂，投資人宜在樂觀中保持謹慎，留意潛在波動風險。
+                        今日美股大盤展現微幅上揚趨勢，道瓊工業指數領漲，標普500與那斯達克指數亦同步收紅，顯示市場在經歷近期波動後略有喘息。波動率指數 (VIX) 下跌，則反映出短期市場恐慌情緒有所緩和。然而，儘管科技巨頭如蘋果表現亮眼，輝達卻逆勢下跌，部分反映市場對科技股的獲利了結壓力。值得注意的是，華爾街對於市場估值過高及未來波動加劇的警示聲浪浮現，且有房市困境的擔憂，但OpenAI潛在的IPO消息為市場注入一劑強心針，共同交織出一個複雜且帶有潛在變數的交易日。
                     </div>
                     <ul class="ai-bullets">
-                        <li>儘管大盤指數普漲，VIX 指數下滑顯示市場短期情緒偏向穩定，但科技股內部走勢分歧，例如輝達 (NVDA) 下跌，提醒投資人應關注板塊輪動與個股表現。</li><li>OpenAI 傳出即將秘密提交 IPO 申請，此消息有望持續點燃市場對人工智慧領域的熱情，並可能帶動相關科技股的投資情緒。</li><li>「巴菲特指標」與其他技術訊號警告股市可能存在過熱風險，結合 Lowe's 執行長對房市的悲觀看法，顯示宏觀經濟層面仍有潛在壓力，需要密切觀察。</li>
+                        <li>美股主要指數普遍收紅，道瓊工業指數領漲，VIX指數下跌顯示短期市場恐慌情緒緩解，為市場帶來一絲正面訊號。</li><li>多則新聞警示市場估值過高與潛在波動加劇，包含「巴菲特指標」及房市困境等，預示投資者需對未來風險保持警惕。</li><li>OpenAI傳出將機密申請IPO，為AI概念股及整體科技市場注入興奮劑，但輝達股價逆勢下跌，顯示市場對部分科技股仍有獲利了結壓力。</li>
                     </ul>
                     
                     <!-- Sentiment Gauge -->
@@ -860,7 +860,7 @@
 
                     <!-- Interactive Filtering Bar (Vanilla JS enabled) -->
                     <div class="news-filter-bar">
-                        <button class="filter-btn active" onclick="filterNews('all')">全部新聞 (5)</button>
+                        <button class="filter-btn active" onclick="filterNews('all')">全部新聞 (6)</button>
                         <button class="filter-btn" onclick="filterNews('high')">高影響力</button>
                         <button class="filter-btn" onclick="filterNews('bullish')">看多情緒</button>
                         <button class="filter-btn" onclick="filterNews('bearish')">看空情緒</button>
@@ -880,10 +880,28 @@
                         <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://finance.yahoo.com/markets/stocks/article/lowes-ceo-says-this-is-the-most-difficult-housing-market-since-the-financial-crisis-170512082.html" target="_blank" class="news-title">Lowe's 執行長表示，這是金融危機以來「最艱難的房市」</a>
-                <div class="news-summary">Lowe's 執行長的評論對當前房地產市場表達悲觀看法，可能暗示消費支出疲軟，對經濟前景構成負面壓力。</div>
+                <a href="https://finance.yahoo.com/markets/stocks/article/lowes-ceo-says-this-is-the-most-difficult-housing-market-since-the-financial-crisis-170512082.html" target="_blank" class="news-title">勞氏（Lowe's）執行長表示：這是金融危機以來「最艱困的房市」</a>
+                <div class="news-summary">房屋零售巨頭執行長的言論，揭示當前房市面臨嚴重挑戰，可能對相關產業鏈及消費者支出造成負面影響。</div>
                 <div class="news-footer">
                     <a href="https://finance.yahoo.com/markets/stocks/article/lowes-ceo-says-this-is-the-most-difficult-housing-market-since-the-financial-crisis-170512082.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/cloudflare-net-q1-results-beat-170757361.html" target="_blank" class="news-title">Cloudflare (NET) 第一季財報優於預期，但市場反應參雜多空訊息</a>
+                <div class="news-summary">雲端服務商 Cloudflare 財報表現超出市場預期，然而市場對此的反應不一，可能反映投資者對未來指引或估值的疑慮，影響市場解讀。</div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/cloudflare-net-q1-results-beat-170757361.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
@@ -898,8 +916,8 @@
                         <span class="badge-impact high"><i class="fa-solid fa-bolt"></i> 高影響力</span>
                     </div>
                 </div>
-                <a href="https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-filing-ipo-soon-165822705.html" target="_blank" class="news-title">OpenAI 傳出最快本週將秘密提交 IPO 申請</a>
-                <div class="news-summary">OpenAI 啟動 IPO 的傳聞，將成為科技界一大盛事，預計將進一步推動市場對人工智慧領域的投資熱情。</div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-filing-ipo-soon-165822705.html" target="_blank" class="news-title">OpenAI 傳最快本週將機密提交 IPO 申請</a>
+                <div class="news-summary">人工智慧巨頭 OpenAI 的 IPO 消息，將為整體科技板塊和 AI 概念股帶來強勁的利多刺激，提振市場信心。</div>
                 <div class="news-footer">
                     <a href="https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-filing-ipo-soon-165822705.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
@@ -916,8 +934,8 @@
                         <span class="badge-impact high"><i class="fa-solid fa-bolt"></i> 高影響力</span>
                     </div>
                 </div>
-                <a href="https://www.marketwatch.com/story/buffett-indicator-warns-of-a-market-top-8-crucial-signs-that-stocks-are-running-on-fumes-12e4b4d8?mod=mw_rss_topstories" target="_blank" class="news-title">「巴菲特指標」警告市場見頂 — 股市耗盡動能的 8 大關鍵訊號</a>
-                <div class="news-summary">此分析根據「巴菲特指標」等多項數據，發出市場可能過熱的警訊，暗示股市存在潛在回調風險。</div>
+                <a href="https://www.marketwatch.com/story/buffett-indicator-warns-of-a-market-top-8-crucial-signs-that-stocks-are-running-on-fumes-12e4b4d8?mod=mw_rss_topstories" target="_blank" class="news-title">「巴菲特指標」警告市場見頂 — 股市燃燒殆盡的 8 個關鍵跡象</a>
+                <div class="news-summary">這則報導引用「巴菲特指標」與多項數據，強烈警示當前股市估值過高，存在潛在泡沫風險，引發投資者對市場頂部的擔憂。</div>
                 <div class="news-footer">
                     <a href="https://www.marketwatch.com/story/buffett-indicator-warns-of-a-market-top-8-crucial-signs-that-stocks-are-running-on-fumes-12e4b4d8?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
@@ -934,26 +952,26 @@
                         <span class="badge-impact high"><i class="fa-solid fa-bolt"></i> 高影響力</span>
                     </div>
                 </div>
-                <a href="https://www.marketwatch.com/story/stocks-tread-water-but-a-wave-of-volatility-is-building-3a337d90?mod=mw_rss_topstories" target="_blank" class="news-title">股市表現平平 — 但波動性正在積聚</a>
-                <div class="news-summary">儘管大盤目前持穩，但此報導指出技術指標預示波動性可能增加，提醒投資人需警惕市場風險。</div>
+                <a href="https://www.marketwatch.com/story/stocks-tread-water-but-a-wave-of-volatility-is-building-3a337d90?mod=mw_rss_topstories" target="_blank" class="news-title">股市原地踏步 — 但一波波動性正在積聚</a>
+                <div class="news-summary">儘管短期市場走勢平穩，但技術分析訊號顯示潛在的市場波動正在增強，提示投資者未來可能面臨更大的不確定性。</div>
                 <div class="news-footer">
                     <a href="https://www.marketwatch.com/story/stocks-tread-water-but-a-wave-of-volatility-is-building-3a337d90?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
             </div>
             
-            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+            <div class="news-card glass-card" data-sentiment="bullish" data-impact="medium">
                 <div class="news-card-header">
                     <div class="news-meta-left">
                         <span class="news-source">MarketWatch Top Stories</span>
                         <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
                     </div>
                     <div class="news-badges">
-                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-sentiment bullish"><i class="fa-solid fa-circle-half-stroke"></i> 看多情緒</span>
                         <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
                     </div>
                 </div>
-                <a href="https://www.marketwatch.com/story/spacex-has-a-lot-riding-on-its-imminent-starship-rocket-launch-fd24bf48?mod=mw_rss_topstories" target="_blank" class="news-title">SpaceX 的「星艦」火箭即將發射，背後承載巨大期待</a>
-                <div class="news-summary">SpaceX 星艦的發射是太空科技領域的重要里程碑，其成功與否將影響公司估值及相關產業情緒。</div>
+                <a href="https://www.marketwatch.com/story/spacex-has-a-lot-riding-on-its-imminent-starship-rocket-launch-fd24bf48?mod=mw_rss_topstories" target="_blank" class="news-title">SpaceX 即將進行的星艦（Starship）火箭發射承載重任</a>
+                <div class="news-summary">SpaceX 星艦的成功發射對其 IPO 敘事及公司未來發展至關重要，為私人航太產業帶來高度關注，並可能影響潛在投資者情緒。</div>
                 <div class="news-footer">
                     <a href="https://www.marketwatch.com/story/spacex-has-a-lot-riding-on-its-imminent-starship-rocket-launch-fd24bf48?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
@@ -1020,7 +1038,7 @@
                     <span class="ticker-price">$304.99</span>
                     <span class="ticker-pct">+0.91%</span>
                 </div>
-                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 蘋果公司股價上漲，顯示在市場整體溫和上行中，大型科技股仍獲資金青睞，其基本面穩固提供支撐。</div>
+                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 蘋果公司股價上漲，顯示市場對其基本面或未來產品發展保持信心，吸引買盤進駐。</div>
             </div>
             
             <div class="watchlist-card glass-card down" onclick="window.open('https://finance.yahoo.com/quote/NVDA', '_blank')" style="cursor: pointer;" title="點擊查看 輝達 (NVDA) 的詳細行情分析">
@@ -1035,7 +1053,7 @@
                     <span class="ticker-price">$219.51</span>
                     <span class="ticker-pct">-1.77%</span>
                 </div>
-                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 輝達股價逆勢下跌，可能反映前期漲幅過大後的獲利了結壓力，或市場對其高估值產生部分疑慮。</div>
+                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 輝達股價逆勢下跌，可能受到獲利了結壓力或市場對其高估值的審視，顯示科技股內部存在分歧。</div>
             </div>
             
             <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/TSLA', '_blank')" style="cursor: pointer;" title="點擊查看 特斯拉 (TSLA) 的詳細行情分析">
@@ -1050,7 +1068,7 @@
                     <span class="ticker-price">$417.85</span>
                     <span class="ticker-pct">+0.14%</span>
                 </div>
-                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 特斯拉股價小幅上漲，儘管漲幅不大，但在市場波動中仍能維持正向表現，顯示其持股信心相對穩定。</div>
+                <div class="ticker-ai-impact"><i class="fa-solid fa-robot"></i> 特斯拉股價微幅上揚，表現中規中矩，可能受到市場整體溫和情緒的帶動，等待後續催化劑。</div>
             </div>
             
             <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/TSM', '_blank')" style="cursor: pointer;" title="點擊查看 台積電 ADR (TSM) 的詳細行情分析">
@@ -1234,7 +1252,7 @@
         <!-- FOOTER -->
         <footer>
             <div>美股晨間訊息自動聚合系統 &copy; 2026. Powered by Python, yFinance & Gemini 1.5 Flash.</div>
-            <div style="margin-top: 0.25rem;">報告生成時間：2026-05-22 13:02:51 | 本報告數據與 AI 分析僅供參考，不構成任何投資建議。</div>
+            <div style="margin-top: 0.25rem;">報告生成時間：2026-05-22 13:03:36 | 本報告數據與 AI 分析僅供參考，不構成任何投資建議。</div>
         </footer>
     </div>
 
