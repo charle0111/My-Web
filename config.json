@@ -1,0 +1,23 @@
+{
+  "gemini_api_key": "AIzaSyAG6YMbdaV_wVUOIue8kwiMCDxDYr_FLhc",
+  "scheduled_time": "08:30",
+  "rss_feeds": [
+    {
+      "name": "Yahoo Finance US Market",
+      "url": "https://finance.yahoo.com/news/rssindex"
+    },
+    {
+      "name": "MarketWatch Top Stories",
+      "url": "http://feeds.marketwatch.com/marketwatch/topstories"
+    }
+  ],
+  "monitored_tickers": [
+    "SPY",
+    "QQQ",
+    "AAPL",
+    "NVDA",
+    "TSLA",
+    "TSM"
+  ],
+  "color_scheme": "us_standard"
+}
