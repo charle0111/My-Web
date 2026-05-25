@@ -28,13 +28,16 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Scraper
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
         python "ETF_00981A 持股分析.py"
         python "ETF_00981A 持股分析變化.py"
+        python fetch_market_news.py
 
     - name: Commit and Push Changes
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add "ETF_00981A 持股分析.csv" "ETF_00981A 持股分析變化.csv" "ETF_00403A 持股分析.csv" "ETF_00403A 持股分析變化.csv"
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update ETF PCF data" && git push)
+        git add "ETF_00981A 持股分析.csv" "ETF_00981A 持股分析變化.csv" "ETF_00403A 持股分析.csv" "ETF_00403A 持股分析變化.csv" index.html reports/
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update ETF data and US stock report" && git push)
