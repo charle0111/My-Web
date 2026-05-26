@@ -344,8 +344,9 @@ def generate_report(indices_data, watchlist_data, news_items, calendar_data, ai_
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         html = f.read()
         
-    # 日期計算
-    now = datetime.datetime.now()
+    # 日期計算 (強制使用台灣時區 UTC+8)
+    tz_taiwan = datetime.timezone(datetime.timedelta(hours=8))
+    now = datetime.datetime.now(tz_taiwan)
     today_tw_str = now.strftime("%Y-%m-%d")
     today_us_str = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     gen_time_str = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -1055,7 +1056,7 @@ def generate_index_page():
     </div>
 </body>
     </html>
-<!-- Deploy ID: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")} -->"""
+<!-- Deploy ID: {datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")} -->"""
     
     # 寫入 index.html
     index_path = os.path.join(BASE_DIR, "index.html")
@@ -1072,7 +1073,8 @@ def generate_index_page():
 # ==========================================
 def main():
     print("==========================================")
-    print(f"美股晨間股市訊息與情緒分析系統啟動 (時間: {datetime.datetime.now()})")
+    tz_taiwan = datetime.timezone(datetime.timedelta(hours=8))
+    print(f"美股晨間股市訊息與情緒分析系統啟動 (時間: {datetime.datetime.now(tz_taiwan)} [台灣時間])")
     print("==========================================")
     
     # 1. 抓取大盤與個股
