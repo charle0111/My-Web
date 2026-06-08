@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美股晨間市場重要訊息分析 - 2026-06-09</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            /* Curated Harmonies (HSL) */
+            --primary-glow: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15), transparent 60%);
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            
+            --bullish-color: #10b981;
+            --bullish-bg: rgba(16, 185, 129, 0.15);
+            --bullish-glow: rgba(16, 185, 129, 0.4);
+            
+            --bearish-color: #ef4444;
+            --bearish-bg: rgba(239, 68, 68, 0.15);
+            --bearish-glow: rgba(239, 68, 68, 0.4);
+            
+            --neutral-color: #a8b2c1;
+            --neutral-bg: rgba(168, 178, 193, 0.15);
+            --neutral-glow: rgba(168, 178, 193, 0.3);
+
+            --high-impact: linear-gradient(135deg, #f59e0b, #d97706);
+            --mid-impact: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            --low-impact: linear-gradient(135deg, #6b7280, #374151);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+            padding: 2rem 1rem;
+        }
+
+        /* Ambient glowing circles */
+        .ambient-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+            top: -100px;
+            right: 10%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glassmorphism Common Styles */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Header Layout */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
+        }
+
+        .header-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-badge {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #818cf8;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Index grid */
+        .market-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .pulse-card {
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 110px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pulse-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .pulse-card.up::before { background-color: var(--bullish-color); }
+        .pulse-card.down::before { background-color: var(--bearish-color); }
+        .pulse-card.neutral::before { background-color: var(--neutral-color); }
+
+        .pulse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pulse-name {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .pulse-ticker {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .pulse-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            margin-top: 0.5rem;
+        }
+
+        .pulse-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.2rem;
+        }
+
+        .up .pulse-change { color: var(--bullish-color); }
+        .down .pulse-change { color: var(--bearish-color); }
+        .neutral .pulse-change { color: var(--neutral-color); }
+
+        /* Dashboard Core Grid */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #ffffff;
+        }
+
+        .section-title i {
+            color: #818cf8;
+            font-size: 1.25rem;
+        }
+
+        /* AI Hero Panel */
+        .ai-hero-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(88, 28, 135, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            padding: 2rem;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.1);
+        }
+
+        .ai-hero-card::after {
+            content: 'AI';
+            position: absolute;
+            right: -20px;
+            bottom: -30px;
+            font-size: 12rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.02);
+            font-family: 'Outfit', sans-serif;
+            pointer-events: none;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #c084fc;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+        }
+
+        .ai-summary-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .ai-bullets {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .ai-bullets li {
+            position: relative;
+            padding-left: 1.8rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .ai-bullets li::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: #a855f7;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Sentiment Gauge */
+        .sentiment-container {
+            margin-top: 1.8rem;
+            padding: 1.2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .sentiment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .sentiment-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .sentiment-value {
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+        }
+
+        .sentiment-value.bullish { color: var(--bullish-color); background: var(--bullish-bg); }
+        .sentiment-value.bearish { color: var(--bearish-color); background: var(--bearish-bg); }
+        .sentiment-value.neutral { color: var(--neutral-color); background: var(--neutral-bg); }
+
+        .gauge-bar-wrapper {
+            position: relative;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: visible;
+        }
+
+        .gauge-bar {
+            position: absolute;
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--bearish-color) 0%, #eab308 50%, var(--bullish-color) 100%);
+            width: 100%;
+        }
+
+        .gauge-pointer {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 3px solid #8b5cf6;
+            border-radius: 50%;
+            top: -4px;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+            transition: left 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* News Stream */
+        .news-filter-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #818cf8;
+        }
+
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .news-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .news-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .news-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .news-source {
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .news-badges {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .badge-sentiment {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-sentiment.bullish { color: var(--bullish-color); background: var(--bullish-bg); }
+        .badge-sentiment.bearish { color: var(--bearish-color); background: var(--bearish-bg); }
+        .badge-sentiment.neutral { color: var(--neutral-color); background: var(--neutral-bg); }
+
+        .badge-impact {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-impact.high { background: var(--high-impact); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2); }
+        .badge-impact.medium { background: var(--mid-impact); }
+        .badge-impact.low { background: var(--low-impact); }
+
+        .news-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.45;
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .news-title:hover {
+            color: #a5b4fc;
+        }
+
+        .news-summary {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.015);
+            padding: 0.8rem 1rem;
+            border-left: 3px solid #6366f1;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .news-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .news-link {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #818cf8;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            background: rgba(99, 102, 241, 0.08);
+            padding: 0.4rem 0.9rem;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 8px;
+        }
+
+        .news-link:hover {
+            background: rgba(99, 102, 241, 0.18);
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #c7d2fe;
+            transform: translateX(2px);
+        }
+
+        /* Right Column Modules */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Economic Calendar */
+        .calendar-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .calendar-item {
+            padding: 1rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            position: relative;
+        }
+
+        .calendar-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .calendar-event {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .calendar-values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            text-align: center;
+        }
+
+        .calendar-val-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .cal-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .cal-val {
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .cal-val.actual {
+            color: #ffffff;
+        }
+
+        .cal-val.up { color: var(--bullish-color); }
+        .cal-val.down { color: var(--bearish-color); }
+
+        /* Watchlist Grid */
+        .watchlist-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .watchlist-card {
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watchlist-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .ticker-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .ticker-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticker-sym {
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .ticker-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .watchlist-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .ticker-price {
+            font-size: 1.05rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .ticker-pct {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .watchlist-card.up .ticker-pct { background: var(--bullish-bg); color: var(--bullish-color); }
+        .watchlist-card.down .ticker-pct { background: var(--bearish-bg); color: var(--bearish-color); }
+        .watchlist-card.neutral .ticker-pct { background: var(--neutral-bg); color: var(--neutral-color); }
+
+        .watchlist-card.up .ticker-avatar { border-color: rgba(16, 185, 129, 0.2); }
+        .watchlist-card.down .ticker-avatar { border-color: rgba(239, 68, 68, 0.2); }
+
+        /* Watchlist ticker details popup or mini note below */
+        .ticker-ai-impact {
+            grid-column: 1 / -1;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.4rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            border-left: 2px solid #8b5cf6;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #818cf8;
+        }
+
+        /* Quick Interactive Filters logic using vanilla JS */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-size: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="header-title-container">
+                <div class="header-icon"><i class="fa-solid fa-chart-line-up"></i></div>
+                <div class="header-text">
+                    <h1>美股晨間股市訊息與情緒分析</h1>
+                    <p>
+                        <span class="header-badge"><i class="fa-solid fa-calendar-day"></i> 每日報告</span>
+                        台灣時間 2026-06-09 08:30 (美東時間 2026-06-08 20:30)
+                    </p>
+                </div>
+            </div>
+            <!-- Quick index mini values (Header layout fallback or custom widgets) -->
+        </header>
+
+        <!-- MARKET INDICES STATUS (MARKET PULSE) -->
+        <div class="market-pulse-grid">
+            
+            <div class="pulse-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/%5EGSPC', '_blank')" style="cursor: pointer;" title="點擊查看 標普 500 指數 的詳細行情分析">
+                <div class="pulse-header">
+                    <span class="pulse-name">標普 500 指數</span>
+                    <span class="pulse-ticker">^GSPC</span>
+                </div>
+                <div class="pulse-value">7,405.73</div>
+                <div class="pulse-change">
+                    <i class="fa-solid fa-arrow-trend-up"></i> +21.99 (+0.30%)
+                </div>
+            </div>
+            
+            <div class="pulse-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/%5EIXIC', '_blank')" style="cursor: pointer;" title="點擊查看 那斯達克指數 的詳細行情分析">
+                <div class="pulse-header">
+                    <span class="pulse-name">那斯達克指數</span>
+                    <span class="pulse-ticker">^IXIC</span>
+                </div>
+                <div class="pulse-value">25,929.66</div>
+                <div class="pulse-change">
+                    <i class="fa-solid fa-arrow-trend-up"></i> +220.23 (+0.86%)
+                </div>
+            </div>
+            
+            <div class="pulse-card glass-card down" onclick="window.open('https://finance.yahoo.com/quote/%5EDJI', '_blank')" style="cursor: pointer;" title="點擊查看 道瓊工業指數 的詳細行情分析">
+                <div class="pulse-header">
+                    <span class="pulse-name">道瓊工業指數</span>
+                    <span class="pulse-ticker">^DJI</span>
+                </div>
+                <div class="pulse-value">50,786.01</div>
+                <div class="pulse-change">
+                    <i class="fa-solid fa-arrow-trend-down"></i> -80.77 (-0.16%)
+                </div>
+            </div>
+            
+            <div class="pulse-card glass-card down" onclick="window.open('https://finance.yahoo.com/quote/%5EVIX', '_blank')" style="cursor: pointer;" title="點擊查看 波動率指數 (VIX) 的詳細行情分析">
+                <div class="pulse-header">
+                    <span class="pulse-name">波動率指數 (VIX)</span>
+                    <span class="pulse-ticker">^VIX</span>
+                </div>
+                <div class="pulse-value">18.92</div>
+                <div class="pulse-change">
+                    <i class="fa-solid fa-arrow-trend-down"></i> -2.59 (-12.04%)
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="dashboard-layout">
+            <!-- LEFT COLUMN: AI OVERVIEW & NEWS FLOW -->
+            <main>
+                <!-- AI INSIGHTS HERO CARD -->
+                <div class="ai-hero-card">
+                    <span class="ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI 智慧分析洞察</span>
+                    <div class="ai-summary-text">
+                        目前正以標準聚合模式運行。請至 <code>config.json</code> 中配置您的 <code>gemini_api_key</code> 以啟用由 Gemini 驅動的每日美股深度中文情緒分析、新聞翻譯與關鍵亮點整理。
+                    </div>
+                    <ul class="ai-bullets">
+                        
+        <li><b>如何啟用 AI 功能？</b> 在專案目錄下的 <code>config.json</code> 中，將 <code>gemini_api_key</code> 欄位填入您的 Gemini API 金鑰。</li>
+        <li><b>標準模式限制</b>：本報告中的新聞標題與內容為英文原文，且無情緒標籤，部分解讀功能受限。</li>
+        <li><b>指數與經濟數據</b>：大盤指數與今日美國經濟指標依舊能正常即時獲取。</li>
+        
+                    </ul>
+                    
+                    <!-- Sentiment Gauge -->
+                    <div class="sentiment-container">
+                        <div class="sentiment-meta">
+                            <span class="sentiment-label"><i class="fa-solid fa-gauge-high"></i> 今日市場情緒綜合評估</span>
+                            <span class="sentiment-value neutral">中性觀望 (標準模式)</span>
+                        </div>
+                        <div class="gauge-bar-wrapper">
+                            <div class="gauge-bar"></div>
+                            <div class="gauge-pointer" style="left: 50%;"></div>
+                        </div>
+                        <div class="gauge-labels">
+                            <span><i class="fa-solid fa-face-frown-open"></i> 極度悲觀</span>
+                            <span><i class="fa-solid fa-face-meh"></i> 中性觀望</span>
+                            <span><i class="fa-solid fa-face-smile-beam"></i> 極度樂觀</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEWS STREAM -->
+                <section>
+                    <div class="section-title">
+                        <i class="fa-solid fa-newspaper"></i>
+                        <h2>今日焦點財經新聞</h2>
+                    </div>
+
+                    <!-- Interactive Filtering Bar (Vanilla JS enabled) -->
+                    <div class="news-filter-bar">
+                        <button class="filter-btn active" onclick="filterNews('all')">全部新聞 (12)</button>
+                        <button class="filter-btn" onclick="filterNews('high')">高影響力</button>
+                        <button class="filter-btn" onclick="filterNews('bullish')">看多情緒</button>
+                        <button class="filter-btn" onclick="filterNews('bearish')">看空情緒</button>
+                        <button class="filter-btn" onclick="filterNews('neutral')">中性觀望</button>
+                    </div>
+
+                    <div class="news-list" id="news-stream">
+                        
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/economy/articles/savings-habit-won-t-shut-135237229.html" target="_blank" class="news-title">The Savings Habit That Won’t Shut Off: Why 39% of Retirees Hoard Their Wealth</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/economy/articles/savings-habit-won-t-shut-135237229.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/dear-qualcomm-stock-fans-mark-140002013.html" target="_blank" class="news-title">Dear Qualcomm Stock Fans, Mark Your Calendars for June 24</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/dear-qualcomm-stock-fans-mark-140002013.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/currencies/articles/americans-still-owe-1-25-140002534.html" target="_blank" class="news-title">Americans Still Owe $1.25 Trillion on Credit Cards as Interest Tops 23%: Experts Say This One Call Helped Over 80% of Borrowers Get a Lower Rate</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/currencies/articles/americans-still-owe-1-25-140002534.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/dear-future-erock-stock-fans-134502148.html" target="_blank" class="news-title">Dear Future ERock Stock Fans, Mark Your Calendars for June 10</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/dear-future-erock-stock-fans-134502148.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/sectors/technology/articles/microsoft-announces-majorana-2-quantum-141502799.html" target="_blank" class="news-title">Microsoft Announces Majorana 2 Quantum Chip as Wedbush Calls It Another ‘Validation’ for the Industry</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/sectors/technology/articles/microsoft-announces-majorana-2-quantum-141502799.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/research/reports/ARGUS_3186_AnalystReport_1780943646000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei" target="_blank" class="news-title">Analyst Report: Metlife Inc</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/research/reports/ARGUS_3186_AnalystReport_1780943646000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/stocks/articles/5-ai-related-stocks-buy-135000562.html" target="_blank" class="news-title">Here Are 5 AI-Related Stocks to Buy and Hold for the Next 5 Years</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/stocks/articles/5-ai-related-stocks-buy-135000562.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">Yahoo Finance US Market</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://finance.yahoo.com/markets/options/articles/selling-short-1-month-occidental-133002930.html" target="_blank" class="news-title">Selling Short 1-Month Occidental Petroleum Put Options Is Still Working</a>
+                <div class="news-summary"></div>
+                <div class="news-footer">
+                    <a href="https://finance.yahoo.com/markets/options/articles/selling-short-1-month-occidental-133002930.html" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">MarketWatch Top Stories</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://www.marketwatch.com/story/openai-files-confidentially-for-ipo-but-theres-a-catch-3f13fc13?mod=mw_rss_topstories" target="_blank" class="news-title">OpenAI files confidentially for IPO — but there’s a catch</a>
+                <div class="news-summary">“It may be a while because there are things we want to do that are likely easier as a private company,” OpenAI says.</div>
+                <div class="news-footer">
+                    <a href="https://www.marketwatch.com/story/openai-files-confidentially-for-ipo-but-theres-a-catch-3f13fc13?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">MarketWatch Top Stories</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://www.marketwatch.com/story/my-golf-buddy-worked-as-a-financial-adviser-heres-how-i-really-knew-his-friendship-was-fake-9e5695d5?mod=mw_rss_topstories" target="_blank" class="news-title">My golf buddy worked as a financial adviser. Here’s how I knew his friendship was fake.</a>
+                <div class="news-summary">“He always mentioned how popular I was.”</div>
+                <div class="news-footer">
+                    <a href="https://www.marketwatch.com/story/my-golf-buddy-worked-as-a-financial-adviser-heres-how-i-really-knew-his-friendship-was-fake-9e5695d5?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">MarketWatch Top Stories</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://www.marketwatch.com/story/your-next-videogame-console-could-cost-1-000-and-it-has-nothing-to-do-with-better-hardware-8cb180dd?mod=mw_rss_topstories" target="_blank" class="news-title">Your tech portfolio could be on the wrong side of the AI boom</a>
+                <div class="news-summary">Why the coming $1,000 videogame console will squeeze hardware stocks.</div>
+                <div class="news-footer">
+                    <a href="https://www.marketwatch.com/story/your-next-videogame-console-could-cost-1-000-and-it-has-nothing-to-do-with-better-hardware-8cb180dd?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+            <div class="news-card glass-card" data-sentiment="neutral" data-impact="medium">
+                <div class="news-card-header">
+                    <div class="news-meta-left">
+                        <span class="news-source">MarketWatch Top Stories</span>
+                        <span><i class="fa-regular fa-clock"></i> 今日晨間</span>
+                    </div>
+                    <div class="news-badges">
+                        <span class="badge-sentiment neutral"><i class="fa-solid fa-circle-half-stroke"></i> 中性觀望</span>
+                        <span class="badge-impact medium"><i class="fa-solid fa-bolt"></i> 中影響力</span>
+                    </div>
+                </div>
+                <a href="https://www.marketwatch.com/story/an-inflation-storm-is-brewing-in-the-pacific-ocean-and-your-portfolio-isnt-ready-f200fc60?mod=mw_rss_topstories" target="_blank" class="news-title">An inflation storm is brewing in the Pacific Ocean — and your portfolio isn’t ready</a>
+                <div class="news-summary">A looming climate shock threatens to drive up global commodity prices. These investments can help protect your purchasing power.</div>
+                <div class="news-footer">
+                    <a href="https://www.marketwatch.com/story/an-inflation-storm-is-brewing-in-the-pacific-ocean-and-your-portfolio-isnt-ready-f200fc60?mod=mw_rss_topstories" target="_blank" class="news-link">閱讀英文原文 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+            </div>
+            
+                        
+                        <div class="no-results" id="no-news-msg">
+                            <i class="fa-solid fa-circle-exclamation" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                            沒有符合篩選條件的新聞
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- RIGHT COLUMN: ECONOMIC CALENDAR & WATCHLIST -->
+            <div class="sidebar">
+                <!-- Watchlist -->
+                <section>
+                    <div class="section-title">
+                        <i class="fa-solid fa-eye"></i>
+                        <h2>重點觀察股行情與 AI 解讀</h2>
+                    </div>
+                    <div class="watchlist-grid">
+                        
+            <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/SPY', '_blank')" style="cursor: pointer;" title="點擊查看 S&P 500 ETF (SPY) 的詳細行情分析">
+                <div class="watchlist-left">
+                    <div class="ticker-avatar">SP</div>
+                    <div class="ticker-details">
+                        <span class="ticker-sym">SPY</span>
+                        <span class="ticker-name">S&P 500 ETF</span>
+                    </div>
+                </div>
+                <div class="watchlist-right">
+                    <span class="ticker-price">$739.22</span>
+                    <span class="ticker-pct">+0.23%</span>
+                </div>
+                
+            </div>
+            
+            <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/QQQ', '_blank')" style="cursor: pointer;" title="點擊查看 Nasdaq 100 ETF (QQQ) 的詳細行情分析">
+                <div class="watchlist-left">
+                    <div class="ticker-avatar">QQ</div>
+                    <div class="ticker-details">
+                        <span class="ticker-sym">QQQ</span>
+                        <span class="ticker-name">Nasdaq 100 ETF</span>
+                    </div>
+                </div>
+                <div class="watchlist-right">
+                    <span class="ticker-price">$716.07</span>
+                    <span class="ticker-pct">+1.56%</span>
+                </div>
+                
+            </div>
+            
+            <div class="watchlist-card glass-card down" onclick="window.open('https://finance.yahoo.com/quote/AAPL', '_blank')" style="cursor: pointer;" title="點擊查看 蘋果公司 (AAPL) 的詳細行情分析">
+                <div class="watchlist-left">
+                    <div class="ticker-avatar">AA</div>
+                    <div class="ticker-details">
+                        <span class="ticker-sym">AAPL</span>
+                        <span class="ticker-name">蘋果公司</span>
+                    </div>
+                </div>
+                <div class="watchlist-right">
+                    <span class="ticker-price">$301.54</span>
+                    <span class="ticker-pct">-1.89%</span>
+                </div>
+                
+            </div>
+            
+            <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/NVDA', '_blank')" style="cursor: pointer;" title="點擊查看 輝達 (NVDA) 的詳細行情分析">
+                <div class="watchlist-left">
+                    <div class="ticker-avatar">NV</div>
+                    <div class="ticker-details">
+                        <span class="ticker-sym">NVDA</span>
+                        <span class="ticker-name">輝達</span>
+                    </div>
+                </div>
+                <div class="watchlist-right">
+                    <span class="ticker-price">$208.64</span>
+                    <span class="ticker-pct">+1.73%</span>
+                </div>
+                
+            </div>
+            
+            <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/TSLA', '_blank')" style="cursor: pointer;" title="點擊查看 特斯拉 (TSLA) 的詳細行情分析">
+                <div class="watchlist-left">
+                    <div class="ticker-avatar">TS</div>
+                    <div class="ticker-details">
+                        <span class="ticker-sym">TSLA</span>
+                        <span class="ticker-name">特斯拉</span>
+                    </div>
+                </div>
+                <div class="watchlist-right">
+                    <span class="ticker-price">$408.95</span>
+                    <span class="ticker-pct">+4.59%</span>
+                </div>
+                
+            </div>
+            
+            <div class="watchlist-card glass-card up" onclick="window.open('https://finance.yahoo.com/quote/TSM', '_blank')" style="cursor: pointer;" title="點擊查看 台積電 ADR (TSM) 的詳細行情分析">
+                <div class="watchlist-left">
+                    <div class="ticker-avatar">TS</div>
+                    <div class="ticker-details">
+                        <span class="ticker-sym">TSM</span>
+                        <span class="ticker-name">台積電 ADR</span>
+                    </div>
+                </div>
+                <div class="watchlist-right">
+                    <span class="ticker-price">$426.80</span>
+                    <span class="ticker-pct">+2.80%</span>
+                </div>
+                
+            </div>
+            
+                    </div>
+                </section>
+
+                <!-- Economic Calendar -->
+                <section>
+                    <div class="section-title">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <h2>今日美國重要經濟日曆</h2>
+                    </div>
+                    <div class="calendar-list">
+                        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Economy Watchers Poll SA*</span>
+            </div>
+            <div class="calendar-event">JP</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">5:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">May</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">43.6</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Industrial Orders MM*</span>
+            </div>
+            <div class="calendar-event">DE</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">6:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">Apr</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">-3.8</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Consumer Price Index YY*</span>
+            </div>
+            <div class="calendar-event">LT</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">6:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">May</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">5.5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Consumer Price Index MM*</span>
+            </div>
+            <div class="calendar-event">LT</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">6:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">May</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">-0.1</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Trade Balance</span>
+            </div>
+            <div class="calendar-event">CZ</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">7:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">Apr</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">6.8</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Industrial Output YY</span>
+            </div>
+            <div class="calendar-event">CZ</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">7:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">Apr</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">1.5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-item glass-card">
+            <div class="calendar-item-header">
+                <span class="calendar-time"><i class="fa-regular fa-clock"></i> Unemployment Rate*</span>
+            </div>
+            <div class="calendar-event">CZ</div>
+            <div class="calendar-values-grid">
+                <div class="calendar-val-box">
+                    <span class="cal-label">實際值</span>
+                    <span class="cal-val actual">8:00 AM UTC</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">預測值</span>
+                    <span class="cal-val">May</span>
+                </div>
+                <div class="calendar-val-box">
+                    <span class="cal-label">前值</span>
+                    <span class="cal-val">4.8</span>
+                </div>
+            </div>
+        </div>
+        
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div>美股晨間訊息自動聚合系統 &copy; 2026. Powered by Python, yFinance & Gemini 1.5 Flash.</div>
+            <div style="margin-top: 0.25rem;">報告生成時間：2026-06-09 06:34:30 | 本報告數據與 AI 分析僅供參考，不構成任何投資建議。</div>
+        </footer>
+    </div>
+
+    <!-- Interactive Filtering Script -->
+    <script>
+        function filterNews(filterType) {
+            // Update active button state
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const cards = document.querySelectorAll('.news-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const sentiment = card.getAttribute('data-sentiment');
+                const impact = card.getAttribute('data-impact');
+
+                let show = false;
+                if (filterType === 'all') {
+                    show = true;
+                } else if (filterType === 'high' && impact === 'high') {
+                    show = true;
+                } else if (filterType === 'bullish' && sentiment === 'bullish') {
+                    show = true;
+                } else if (filterType === 'bearish' && sentiment === 'bearish') {
+                    show = true;
+                } else if (filterType === 'neutral' && sentiment === 'neutral') {
+                    show = true;
+                }
+
+                if (show) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Handle empty search results state
+            const noResultsMsg = document.getElementById('no-news-msg');
+            if (visibleCount === 0) {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
